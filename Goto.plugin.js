@@ -10,6 +10,27 @@ const {readText} = require("electron").clipboard;
 const {transitionTo} = BdApi.findModuleByProps('transitionTo'); // this gets the navigator module, which contains transitionTo
 const {showToast} = BdApi;
 
+function fixdate(arr) {
+	arr[1]--;
+	return arr;
+}
+
+// a decoder returns either false or a string[] message, channel?, server?
+const decoders = [
+	// a local date like 20211005113153
+	str => /^\d{14}$/.test(str) && [BigInt(new Date(...fixdate(/(....)(..)(..)(..)(..)(..)/.exec(str).slice(1))).getTime() - 1420070400000) << 22n], // 22n is BigInt(22)
+	// discord message url or just message id. never returns false
+	str => str.match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
+];
+
+function decode(str) {
+	for (const f of decoders)
+		// try {
+			if (f(str))
+				return f(str);
+		// } catch (e) {}
+}
+
 module.exports = class Goto {
 	start =()=> document.body.   addEventListener("keydown", this.listener, true);
 	stop  =()=> document.body.removeEventListener("keydown", this.listener, true);
@@ -18,15 +39,13 @@ module.exports = class Goto {
 		if ((e.keyCode << 3 | e.ctrlKey << 2 | e.shiftKey << 1 | e.altKey) == 572) { // 71 (g), true, false, false
 			e.preventDefault();
 			e.stopImmediatePropagation();
-			const text = readText()
-			const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/(\d+)\/(\d+)/) || [];
-			const [, server, channel, message] = text.match(/(\d*?)\/?(\d*?)\/?(\d*)$/);
-			if (!(server || thisserver) || !(channel || thischannel)) {
-				showToast("Nope", {type: "warning"});
-				return;
-			}
-			showToast(text);
-			transitionTo(`/channels/${server || thisserver}/${channel || thischannel}/${message || 0}`);
+			const str = readText()
+			const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
+			const [message, channel = thischannel, server = thisserver] = decode(str);
+			if      (!message)            return showToast("Incomprehensible", {type: "warning"});
+			else if (!server || !channel) return showToast("Unknown server or channel", {type: "warning"});
+			showToast(str);
+			transitionTo(`/channels/${server}/${channel}/${message}`);
 		}
 	}
 }
