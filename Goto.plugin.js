@@ -18,12 +18,7 @@ module.exports = class Goto {
 	stop  =()=> document.body.removeEventListener("keydown", this.listener, true);
 	
 	listener =e=> {
-		if (
-			e.keyCode  == 71    & // g
-			e.ctrlKey  == true  &
-			e.shiftKey == false &
-			e.altKey   == false
-		) {
+		if ((e.keyCode << 3 | e.ctrlKey << 2 | e.shiftKey << 1 | e.altKey) == 572) { // 71 (g), true, false, false
 			e.preventDefault();
 			e.stopImmediatePropagation();
 			const text = readText()
