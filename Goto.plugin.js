@@ -15,12 +15,20 @@ function fixdate(arr) {
 	return arr;
 }
 
+function msecToSnowflake(num) {
+	return BigInt(num - 1420070400000) << 22n // 22n is BigInt(22)
+}
+
+function arrayOk(arr) {
+	return arr.length && arr
+}
+
 // a decoder returns either false or a string[] message, channel?, server?
 const decoders = [
 	// a local date like 20211005113153
-	str => /^\d{14}$/.test(str) && [BigInt(new Date(...fixdate(/(....)(..)(..)(..)(..)(..)/.exec(str).slice(1))).getTime() - 1420070400000) << 22n], // 22n is BigInt(22)
+	str => /^\d{14}$/.test(str) && [msecToSnowflake(new Date(...fixdate(/(....)(..)(..)(..)(..)(..)/.exec(str).slice(1))).getTime())],
 	// discord message url or just message id. never returns false
-	str => str.match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
+	str => arrayOk(str.match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean)),
 ];
 
 function decode(str) {
