@@ -43,6 +43,7 @@ function decode(str) {
 	for (var f of decoders)
 		if (value = verify(f(str)))
 			return value;
+	return [];
 }
 
 module.exports = class Goto {
