@@ -34,15 +34,20 @@ const decoders = [
 	str => regexToSnowflake(/^\s*(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*$/.exec(str)),
 	// YYYY-MM-DD HH:MM:SS
 	str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
-	// discord message url or just message id
-	str => /(@me|\d*?)\/?(\d*?)\/?(\d*)$/.exec(str).slice(1).reverse().filter(Boolean),
+	// attachment link
+	// todo: needs information about which server the channel is in
+	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
+	// discord message url or just message id, tolerating a comment after a space
+	str => str.match(/\S*/)[0].match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
 ];
 
 function decode(str) {
 	let value;
 	for (var f of decoders)
-		if (value = verify(f(str)))
-			return value;
+		try {
+			if (value = verify(f(str)))
+				return value;
+		} catch (e) {}
 	return [];
 }
 
