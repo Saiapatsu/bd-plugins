@@ -11,7 +11,8 @@ const {transitionTo} = BdApi.findModuleByProps('transitionTo'); // this gets the
 const {showToast} = BdApi;
 
 function msecToSnowflake(num) {
-	return BigInt(num - 1420070400000) << 22n // 22n is BigInt(22)
+	return BigInt(num - 1420070400000) << 22n // 22n is BigInt(22);
+	// return (num - 1420070400000) * 4194304;
 }
 
 function regexToSnowflake(arr) {
@@ -30,13 +31,19 @@ function verify(value) {
 const decoders = [
 	// #channel date
 	// todo: str => str.startsWith(/\s*#/) && find channel, return [decode(rest)[0], channel, server]
+	// attachment link
+	// todo: needs information about which server the channel is in
+	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
 	// YYYYMMDDHHMMSS
 	str => regexToSnowflake(/^\s*(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*$/.exec(str)),
 	// YYYY-MM-DD HH:MM:SS
 	str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
-	// attachment link
-	// todo: needs information about which server the channel is in
-	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
+	// Unix seconds or milliseconds timestamp between Discord epoch and now
+	// collision with snowflakes won't be a concern within my lifetime
+	str => {Number(str = /\s*(\d+)\s*/.exec(str)[1]);
+		return str
+			&& (str >= 1420070400    && str < Date.now() / 1000) ? msecToSnowflake(str * 1000)
+			:  (str >= 1420070400000 && str < Date.now()        && msecToSnowflake(str       ))},
 	// discord message url or just message id, tolerating a comment after a space
 	str => str.match(/\S*/)[0].match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
 ];
