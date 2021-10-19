@@ -7,7 +7,8 @@
  */
 
 const {readText} = require("electron").clipboard;
-const {transitionTo} = BdApi.findModuleByProps('transitionTo'); // this gets the navigator module, which contains transitionTo
+const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
+const {getChannel} = BdApi.findModuleByProps("getChannel");
 const {showToast} = BdApi;
 
 function msecToSnowflake(num) {
@@ -32,7 +33,6 @@ const decoders = [
 	// #channel date
 	// todo: str => str.startsWith(/\s*#/) && find channel, return [decode(rest)[0], channel, server]
 	// attachment link
-	// todo: needs information about which server the channel is in
 	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
 	// YYYYMMDDHHMMSS
 	str => regexToSnowflake(/^\s*(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*$/.exec(str)),
@@ -68,9 +68,10 @@ module.exports = class Goto {
 			e.stopImmediatePropagation();
 			const str = readText()
 			const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
-			const [message, channel = thischannel, server = thisserver] = decode(str);
-			if      (!message)            return showToast("Incomprehensible", {type: "warning"});
-			else if (!server || !channel) return showToast("Unknown server or channel", {type: "warning"});
+			let [message, channel, server] = decode(str);
+			if (!message) return showToast("Incomprehensible", {type: "warning"});
+			if (!server && channel) server = getChannel(channel)?.guild_id;
+			if (!server || !channel) return showToast("Unknown server or channel", {type: "warning"});
 			showToast(str);
 			transitionTo(`/channels/${server}/${channel}/${message}`);
 		}
