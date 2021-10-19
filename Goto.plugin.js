@@ -78,6 +78,8 @@ module.exports = class Goto {
 			let [message, channel, server] = decode(str);
 			if (!message) return showToast("Incomprehensible", {type: "warning"});
 			if (!server && channel) server = getChannel(channel)?.guild_id;
+			channel = channel || thischannel;
+			server = server || thisserver;
 			if (!server || !channel) return showToast("Unknown server or channel", {type: "warning"});
 			showToast(str);
 			transitionTo(`/channels/${server}/${channel}/${message}`);
