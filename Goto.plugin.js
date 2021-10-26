@@ -47,7 +47,7 @@ const decoders = [
 	str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
 	// Unix seconds or milliseconds timestamp between Discord epoch and now
 	// collision with snowflakes won't be a concern within my lifetime
-	str => {Number(str = /\s*(\d+)\s*/.exec(str)[1]);
+	str => {str = Number(/\s*(\d+)\s*/.exec(str)[1]);
 		return str
 			&& (str >= 1420070400    && str < Date.now() / 1000) ? msecToSnowflake(str * 1000)
 			:  (str >= 1420070400000 && str < Date.now()        && msecToSnowflake(str       ))},
