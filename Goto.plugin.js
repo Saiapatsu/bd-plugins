@@ -8,8 +8,7 @@
 
 const {readText} = require("electron").clipboard;
 const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
-const {getChannel} = BdApi.findModuleByProps("getChannel");
-const {getMutableGuildChannels} = BdApi.findModuleByProps("getMutableGuildChannels");
+const {getMutableGuildChannels, getChannel} = BdApi.findModuleByProps("getMutableGuildChannels");
 const {showToast} = BdApi;
 
 function msecToSnowflake(num) {
