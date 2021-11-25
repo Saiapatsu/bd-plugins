@@ -69,7 +69,8 @@ module.exports = class Goto {
 	stop  =()=> document.body.removeEventListener("keydown", this.listener, true);
 	
 	listener =e=> {
-		if (e.keyCode == 71 && e.ctrlKey && !e.shiftKey && !e.altKey) {
+		if (e.keyCode == 71 && e.ctrlKey && !e.shiftKey && !e.altKey) { // G
+			// Go to message in clipboard
 			e.preventDefault();
 			e.stopImmediatePropagation();
 			const str = readText()
@@ -82,6 +83,13 @@ module.exports = class Goto {
 			if (!server || !channel) return showToast("Unknown server or channel\n" + str, {type: "warning"});
 			showToast(str);
 			transitionTo(`/channels/${server}/${channel}/${message}`);
+			
+		} else if (e.keyCode == 33 && e.ctrlKey && e.shiftKey && !e.altKey) { // PageUp
+			// Go to beginning of channel
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			const [, server, channel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
+			transitionTo(`/channels/${server}/${channel}/0`);
 		}
 	}
 }
