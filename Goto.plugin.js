@@ -66,33 +66,33 @@ function decode(str) {
 	return [];
 }
 
-module.exports = class Goto {
-	start =()=> document.body.   addEventListener("keydown", this.listener, true);
-	stop  =()=> document.body.removeEventListener("keydown", this.listener, true);
-	
-	listener =e=> {
-		if (e.keyCode == 71 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+G
-			// Go to message in clipboard
-			e.preventDefault();
-			e.stopImmediatePropagation();
-			const str = readText()
-			const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
-			let [message, channel, server] = decode(str);
-			if (!message) return showToast("Incomprehensible\n" + str, {type: "warning"});
-			if (!Number(server) && channel) server = getChannel(channel)?.guild_id || server;
-			channel = channel || thischannel;
-			server = server || thisserver;
-			if (!server || !channel) return showToast("Cannot resolve\n" + str, {type: "warning"});
-			if (server !== "@me" && !hasChannel(channel)) return showToast("Unknown channel\n" + str, {type: "warning"});
-			showToast(str);
-			transitionTo(`/channels/${server}/${channel}/${message}`);
-			
-		} else if (e.keyCode == 33 && e.ctrlKey && e.shiftKey && !e.altKey) { // Ctrl+Shift+PageUp
-			// Go to beginning of channel
-			e.preventDefault();
-			e.stopImmediatePropagation();
-			const [, server, channel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
-			transitionTo(`/channels/${server}/${channel}/0`);
-		}
+function listener(e) {
+	if (e.keyCode == 71 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+G
+		// Go to message in clipboard
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		const str = readText()
+		const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
+		let [message, channel, server] = decode(str);
+		if (!message) return showToast("Incomprehensible\n" + str, {type: "warning"});
+		if (!Number(server) && channel) server = getChannel(channel)?.guild_id || server;
+		channel = channel || thischannel;
+		server = server || thisserver;
+		if (!server || !channel) return showToast("Cannot resolve\n" + str, {type: "warning"});
+		if (server !== "@me" && !hasChannel(channel)) return showToast("Unknown channel\n" + str, {type: "warning"});
+		showToast(str);
+		transitionTo(`/channels/${server}/${channel}/${message}`);
+		
+	} else if (e.keyCode == 33 && e.ctrlKey && e.shiftKey && !e.altKey) { // Ctrl+Shift+PageUp
+		// Go to beginning of channel
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		const [, server, channel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
+		transitionTo(`/channels/${server}/${channel}/0`);
 	}
+}
+
+module.exports = class Goto {
+	start =()=> document.body.   addEventListener("keydown", listener, true);
+	stop  =()=> document.body.removeEventListener("keydown", listener, true);
 }
