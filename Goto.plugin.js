@@ -16,16 +16,12 @@ function msecToSnowflake(num) {
 	// return (num - 1420070400000) * 4194304;
 }
 
+// array [str, yyyy, mm, dd, hh, mm, ss] (from a regex) to snowflake
 function regexToSnowflake(arr) {
 	if (!arr) return;
 	arr = arr.slice(1);
 	arr[1]--;
 	return msecToSnowflake(new Date(...arr).getTime());
-}
-
-// returns false or array
-function verify(value) {
-	return value && (typeof value == "object" ? (value.length && value) : [value]);
 }
 
 // a decoder returns either false, empty array or a string[] message, channel?, server?
@@ -54,6 +50,12 @@ const decoders = [
 	str => str.match(/\S*/)[0].match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
 ];
 
+// returns false or array
+function verify(value) {
+	return value && (typeof value == "object" ? (value.length && value) : [value]);
+}
+
+// returns array [message, channel, server]
 function decode(str) {
 	let value;
 	for (var f of decoders)
