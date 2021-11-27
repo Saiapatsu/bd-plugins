@@ -69,7 +69,7 @@ module.exports = class Goto {
 	stop  =()=> document.body.removeEventListener("keydown", this.listener, true);
 	
 	listener =e=> {
-		if (e.keyCode == 71 && e.ctrlKey && !e.shiftKey && !e.altKey) { // G
+		if (e.keyCode == 71 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+G
 			// Go to message in clipboard
 			e.preventDefault();
 			e.stopImmediatePropagation();
@@ -84,7 +84,7 @@ module.exports = class Goto {
 			showToast(str);
 			transitionTo(`/channels/${server}/${channel}/${message}`);
 			
-		} else if (e.keyCode == 33 && e.ctrlKey && e.shiftKey && !e.altKey) { // PageUp
+		} else if (e.keyCode == 33 && e.ctrlKey && e.shiftKey && !e.altKey) { // Ctrl+Shift+PageUp
 			// Go to beginning of channel
 			e.preventDefault();
 			e.stopImmediatePropagation();
