@@ -79,7 +79,7 @@ module.exports = class Goto {
 			const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
 			let [message, channel, server] = decode(str);
 			if (!message) return showToast("Incomprehensible\n" + str, {type: "warning"});
-			if (!server && channel) server = getChannel(channel)?.guild_id;
+			if (!Number(server) && channel) server = getChannel(channel)?.guild_id;
 			channel = channel || thischannel;
 			server = server || thisserver;
 			if (!server || !channel) return showToast("Unknown server or channel\n" + str, {type: "warning"});
