@@ -8,7 +8,7 @@
 
 const {readText} = require("electron").clipboard;
 const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
-const {getMutableGuildChannels, getChannel} = BdApi.findModuleByProps("getMutableGuildChannels");
+const {getMutableGuildChannels, getChannel, hasChannel} = BdApi.findModuleByProps("getMutableGuildChannels");
 const {showToast} = BdApi;
 
 function msecToSnowflake(num) {
@@ -79,10 +79,11 @@ module.exports = class Goto {
 			const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
 			let [message, channel, server] = decode(str);
 			if (!message) return showToast("Incomprehensible\n" + str, {type: "warning"});
-			if (!Number(server) && channel) server = getChannel(channel)?.guild_id;
+			if (!Number(server) && channel) server = getChannel(channel)?.guild_id || server;
 			channel = channel || thischannel;
 			server = server || thisserver;
-			if (!server || !channel) return showToast("Unknown server or channel\n" + str, {type: "warning"});
+			if (!server || !channel) return showToast("Cannot resolve\n" + str, {type: "warning"});
+			if (server !== "@me" && !hasChannel(channel)) return showToast("Unknown channel\n" + str, {type: "warning"});
 			showToast(str);
 			transitionTo(`/channels/${server}/${channel}/${message}`);
 			
