@@ -3,9 +3,8 @@
  * @description Press Ctrl-P to open the user modal of the user ID in the clipboard
  * @version 0
  * @author Wist
+ * @source https://github.com/Saiapatsu/bd-plugins/blob/master/OpenUserModal.plugin.js
  */
-
-// * @source https://github.com/Saiapatsu/bd-plugins/blob/master/Goto.plugin.js
 
 const {readText} = require("electron").clipboard;
 const {showToast} = BdApi;
