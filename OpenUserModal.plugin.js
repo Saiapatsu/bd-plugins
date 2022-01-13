@@ -10,6 +10,7 @@ const {readText} = require("electron").clipboard;
 const {showToast} = BdApi;
 const {getGuildId} = BdApi.findModuleByProps("getLastSelectedGuildId");
 const {openUserProfileModal} = BdApi.findModuleByProps("openUserProfileModal");
+const {getUser} = BdApi.findModuleByProps("getUser");
 
 function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
@@ -17,11 +18,13 @@ function listener(e) {
 		e.stopImmediatePropagation();
 		const str = readText()
 		if (str.match(/\D/)) return showToast("Clipboard is not a user ID", {type: "warning"});
-		openUserProfileModal({
-			userId: str,
-			guildId: getGuildId() || "0",
-		})
-			.then(res => showToast(str))
+		const guildId = getGuildId() || "0";
+		showToast(str);
+		getUser(str)
+			.then(user => openUserProfileModal({
+				userId: str,
+				guildId: guildId,
+			}))
 			.catch(res => showToast(res.text + "\n(This user might not exist)", {type: "warning"}));
 	}
 }
