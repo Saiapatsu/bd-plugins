@@ -25,6 +25,8 @@ const [Plugin, BDFDB] = window.BDFDB_Global.PluginUtils.buildPlugin({
 
 // todo: stop keeping const module functions
 const {getChannel} = BdApi.findModuleByProps("getChannel", "getMutableGuildChannels");
+// also contains getMember, which we actually isn't needed to learn whether a user is a member
+const {getAllGuildsAndMembers} = BdApi.findModuleByProps("getAllGuildsAndMembers");
 
 module.exports = class MarkAbsentMembers extends Plugin {
 	onLoad () {
@@ -39,6 +41,18 @@ module.exports = class MarkAbsentMembers extends Plugin {
 	onStart () {
 		BdApi.injectCSS("MarkAbsentMembers",
 `.absent {
+	/* text-decoration: line-through dotted; */
+} .absent::after {
+	/* transparent line-through https://codepen.io/startages/pen/wzapwV */
+	position: absolute;
+	display: block;
+	content: "";
+	width: 100%;
+	border-top: 2px solid white;
+	left: 0;
+	top: 50%;
+	opacity:0.5;
+} .gone {
 	text-decoration: line-through;
 } .usernamereal {
 	color: var(--text-muted);
@@ -102,7 +116,10 @@ module.exports = class MarkAbsentMembers extends Plugin {
 			// chief of them being: I cba and it works, despite the `this`
 			// potentially changing in bad ways
 			this.children = props.children;
-			props.children = this.markAbsent;
+			if (Object.values(getAllGuildsAndMembers()).find(x => x[e.instance.props.message.author.id]))
+				props.children = this.markAbsent;
+			else
+				props.children = this.markGone;
 			
 		}
 	}
@@ -111,6 +128,13 @@ module.exports = class MarkAbsentMembers extends Plugin {
 	markAbsent = (instance) => {
 		instance = this.children(instance);
 		instance.props.className += " absent";
+		return instance;
+	}
+	
+	// the arrow function makes `this` remain this class
+	markGone = (instance) => {
+		instance = this.children(instance);
+		instance.props.className += " gone";
 		return instance;
 	}
 	
