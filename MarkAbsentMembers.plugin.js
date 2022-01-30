@@ -23,10 +23,9 @@ const [Plugin, BDFDB] = window.BDFDB_Global.PluginUtils.buildPlugin({
 // todo: invisible, but copyable <@id>
 // todo: minimize array allocations, memoize. for a start, add the props _randomly_ to see the current caching behavior (if any)
 
-// todo: stop keeping const module functions
-const {getChannel} = BdApi.findModuleByProps("getChannel", "getMutableGuildChannels");
+const ChannelStore = BdApi.findModuleByProps("getChannel", "getMutableGuildChannels");
 // also contains getMember, which we actually isn't needed to learn whether a user is a member
-const {getAllGuildsAndMembers} = BdApi.findModuleByProps("getAllGuildsAndMembers");
+const UserProfileStore = BdApi.findModuleByProps("getUserProfile", "getMutualGuilds");
 
 module.exports = class MarkAbsentMembers extends Plugin {
 	onLoad () {
@@ -109,18 +108,21 @@ module.exports = class MarkAbsentMembers extends Plugin {
 		
 		if (
 			!e.instance.props.author.hasOwnProperty("iconRoleId") && // this user isn't a member of the guild
-			getChannel(e.instance.props.message.channel_id).getGuildId() // this message is in a guild (not a DM) (wrong way to do it, yes)
+			ChannelStore.getChannel(e.instance.props.message.channel_id).getGuildId() // this message is in a guild (not a DM) (wrong way to do it, yes)
 		) {
 			// donkeypatch function
 			// readers: there are many reasons why I do it like this,
 			// chief of them being: I cba and it works, despite the `this`
 			// potentially changing in bad ways
 			this.children = props.children;
-			if (Object.values(getAllGuildsAndMembers()).find(x => x[e.instance.props.message.author.id]))
-				props.children = this.markAbsent;
-			else
+			if (UserProfileStore.getUserProfile(e.instance.props.message.author.id)?.profileFetchFailed) {
+				// if the userprofile has failed to load, i.e. no contact possible
 				props.children = this.markGone;
-			
+			} else {
+				// if the user profile loaded because there are mutual friends
+				// or guilds, or if it has never been loaded in the first place
+				props.children = this.markAbsent;
+			}
 		}
 	}
 	
@@ -141,7 +143,7 @@ module.exports = class MarkAbsentMembers extends Plugin {
 	// dead code waiting to be revived
 	/*
 	processUserMention (e) {
-		const guildId = getChannel(e.instance.props.channelId).getGuildId();
+		const guildId = ChannelStore.getChannel(e.instance.props.channelId).getGuildId();
 		if (!guildId) return;
 		const userId = e.instance.props.userId;
 		if (!getMember(guildId, userId))
