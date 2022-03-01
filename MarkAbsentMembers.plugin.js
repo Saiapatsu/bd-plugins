@@ -74,18 +74,20 @@ module.exports = class MarkAbsentMembers extends Plugin {
 	eqqwewqew = {className: "userdiscrim"};
 	
 	processMessageUsername(e) {
-		if (e.instance.props.message.webhookId) return; // webhooks aren't users
+		const insprops = e.instance.props;
+		if (insprops.message.webhookId) return; // webhooks aren't users
 		
-		const props = e.returnvalue.props.children[1].props;
+		const retprops = e.returnvalue.props
+		const msgmember = insprops.author;
+		const msgauthor = insprops.message.author;
 		
-		// console.log(e, props);
 		// add username and discrim
-		e.returnvalue.props.children.push([
+		retprops.children.push([
 			// user's actual discord username
-			e.instance.props.message.author.username !== e.instance.props.author.nick
+			msgauthor.username !== msgmember.nick
 				? [
 					" ", // padding
-					BdApi.React.createElement("span", this.asdasdasd, e.instance.props.message.author.username),
+					BdApi.React.createElement("span", this.asdasdasd, msgauthor.username),
 				]
 				: undefined,
 			
@@ -93,35 +95,37 @@ module.exports = class MarkAbsentMembers extends Plugin {
 			BdApi.React.createElement(
 				"span",
 				this.eqqwewqew,
-				"#" + e.instance.props.message.author.discriminator
+				"#" + msgauthor.discriminator
 			),
 			
 			// compensate for the timestamp's lack of leading whitespace (leaves no space when copying...)
 			" ",
 		]);
 		
+		const messageusername = retprops.children[1].props;
+		
 		// watch your step
-		if (typeof props.children !== "function") {
+		if (typeof messageusername.children !== "function") {
 			console.log("MessageUsername children isn't a function");
 			return;
 		}
 		
 		if (
-			!e.instance.props.author.hasOwnProperty("iconRoleId") && // this user isn't a member of the guild
-			ChannelStore.getChannel(e.instance.props.message.channel_id).getGuildId() // this message is in a guild (not a DM) (wrong way to do it, yes)
+			!msgmember.hasOwnProperty("iconRoleId") && // this user isn't a member of the guild
+			ChannelStore.getChannel(insprops.message.channel_id).getGuildId() // this message is in a guild (not a DM) (wrong way to do it, yes)
 		) {
 			// donkeypatch function
 			// readers: there are many reasons why I do it like this,
 			// chief of them being: I cba and it works, despite the `this`
 			// potentially changing in bad ways
-			this.children = props.children;
-			if (UserProfileStore.getUserProfile(e.instance.props.message.author.id)?.profileFetchFailed) {
+			this.children = messageusername.children;
+			if (UserProfileStore.getUserProfile(msgauthor.id)?.profileFetchFailed) {
 				// if the userprofile has failed to load, i.e. no contact possible
-				props.children = this.markGone;
+				messageusername.children = this.markGone;
 			} else {
 				// if the user profile loaded because there are mutual friends
 				// or guilds, or if it has never been loaded in the first place
-				props.children = this.markAbsent;
+				messageusername.children = this.markAbsent;
 			}
 		}
 	}
