@@ -8,7 +8,7 @@
 
 const {readText} = require("electron").clipboard;
 const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
-const {getMutableGuildChannels, getChannel, hasChannel} = BdApi.findModuleByProps("getMutableGuildChannels");
+const {getChannel, hasChannel} = BdApi.findModuleByProps("hasChannel");
 const {showToast} = BdApi;
 
 function msecToSnowflake(num) {
@@ -26,14 +26,6 @@ function regexToSnowflake(arr) {
 
 // a decoder returns either false, empty array or a string[] message, channel?, server?
 const decoders = [
-	// #channel date
-	str => {
-		let [, channel, rest] = str.match(/\s*#(\S+)\s*(.*)/);
-		if (!channel) return;
-		channel = Object.values(getMutableGuildChannels()).find(x => x.name == channel);
-		if (!channel) return;
-		return [decode(rest)[0], channel.id, channel.guild_id]
-	},
 	// attachment link
 	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
 	// YYYYMMDDHHMMSS

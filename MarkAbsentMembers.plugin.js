@@ -23,7 +23,7 @@ const [Plugin, BDFDB] = window.BDFDB_Global.PluginUtils.buildPlugin({
 // todo: invisible, but copyable <@id>
 // todo: minimize array allocations, memoize. for a start, add the props _randomly_ to see the current caching behavior (if any)
 
-const ChannelStore = BdApi.findModuleByProps("getChannel", "getMutableGuildChannels");
+const ChannelStore = BdApi.findModuleByProps("hasChannel");
 // also contains getMember, which we actually isn't needed to learn whether a user is a member
 const UserProfileStore = BdApi.findModuleByProps("getUserProfile", "getMutualGuilds");
 
