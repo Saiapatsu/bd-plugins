@@ -102,7 +102,8 @@ module.exports = class MarkAbsentMembers extends Plugin {
 			" ",
 		]);
 		
-		const messageusername = retprops.children[1].props;
+		
+		const messageusername = retprops.children[2].props;
 		
 		// watch your step
 		if (typeof messageusername.children !== "function") {
