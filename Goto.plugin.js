@@ -31,7 +31,8 @@ const decoders = [
 	// YYYYMMDDHHMMSS
 	str => regexToSnowflake(/^\s*(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*$/.exec(str)),
 	// YYYY-MM-DD HH:MM:SS
-	str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
+	// str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
+	str => regexToSnowflake(/^\s*(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)\s*$/.exec(str)),
 	// Unix seconds or milliseconds timestamp between Discord epoch and now
 	// collision with snowflakes won't be a concern within my lifetime
 	str => {str = Number(/\s*(\d+)\s*/.exec(str)[1]);
