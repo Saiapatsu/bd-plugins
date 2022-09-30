@@ -6,8 +6,10 @@
  * @source https://github.com/Saiapatsu/bd-plugins/blob/master/Goto.plugin.js
  */
 
-const {readText} = require("electron").clipboard;
-const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
+const readClipboard = DiscordNative.clipboard.read;
+// const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
+// temporary measure
+const transitionTo = BdApi.Webpack.getModule((exports, module, index) => module.exports.uL && module.exports.DB);
 const {getChannel, hasChannel} = BdApi.findModuleByProps("hasChannel");
 const {showToast} = BdApi;
 
@@ -64,7 +66,7 @@ function listener(e) {
 		// Go to message in clipboard
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		const str = readText()
+		const str = readClipboard()
 		const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
 		let [message, channel, server] = decode(str);
 		if (!message) return showToast("Incomprehensible\n" + str, {type: "warning"});
