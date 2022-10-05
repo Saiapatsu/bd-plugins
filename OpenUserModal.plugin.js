@@ -17,8 +17,10 @@ function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		const str = readText()
-		if (str.match(/\D/)) return showToast("Clipboard is not a user ID", {type: "warning"});
+		const clip = readClipboard();
+		const match = clip.match(/^\s*(\d)\s*$/);
+		if (!match) return showToast("Clipboard is not a user ID", {type: "warning"});
+		const str = match[1];
 		const guildId = getGuildId() || "0";
 		showToast(str);
 		getUser(str)
