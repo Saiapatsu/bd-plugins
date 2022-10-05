@@ -138,14 +138,15 @@ function check() {
 				BdApi.React.createElement("hr"),
 				BdApi.React.createElement("p", null, `Last checked ${reltime(now - then)}`),
 			]))
-		));
+		))
+		.catch(e => BdApi.toast("RemovalLog Promise.all failed"));
 	}
 	// const t0 = performance.now();
 	// BdApi.showToast("Checked left guilds in " + Math.floor(performance.now() - t0) + "ms");
 	// console.log("checked");
 }
 
-const minInterval = 5 * 60000;
+const minInterval = 1 * 60000;
 const maxInterval = 30 * 60000;
 module.exports = class RemovalLog {
 	start() {
