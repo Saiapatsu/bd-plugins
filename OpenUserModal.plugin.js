@@ -6,11 +6,12 @@
  * @source https://github.com/Saiapatsu/bd-plugins/blob/master/OpenUserModal.plugin.js
  */
 
-const {readText} = require("electron").clipboard;
+const readClipboard = DiscordNative.clipboard.read;
 const {showToast} = BdApi;
 const {getGuildId} = BdApi.findModuleByProps("getLastSelectedGuildId");
-const {openUserProfileModal} = BdApi.findModuleByProps("openUserProfileModal");
+// const {openUserProfileModal} = BdApi.findModuleByProps("openUserProfileModal");
 const {getUser} = BdApi.findModuleByProps("getUser");
+openUserProfileModal = () => showToast("bloop!");
 
 function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
