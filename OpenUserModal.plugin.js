@@ -15,6 +15,8 @@ openUserProfileModal = () => showToast("bloop!");
 
 function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
+		showToast("getUser is broken!!!");
+		if (1) return;
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		const clip = readClipboard();
