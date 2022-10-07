@@ -20,7 +20,7 @@ function listener(e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		const clip = readClipboard();
-		const match = clip.match(/^\s*(\d)\s*$/);
+		const match = clip.match(/^\s*(\d+)\s*$/);
 		if (!match) return showToast("Clipboard is not a user ID", {type: "warning"});
 		const str = match[1];
 		const guildId = getGuildId() || "0";
