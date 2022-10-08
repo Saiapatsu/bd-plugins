@@ -18,7 +18,7 @@ act immediately when a guild/friend removal event is dispatched
 */
 
 const modGuilds = BdApi.findModuleByProps("getGuilds", "getGuild", "getGuildCount");
-const modUserFetch = BdApi.findModuleByProps("getUser", "fetchProfile");
+// const modUserFetch = BdApi.findModuleByProps("getUser", "fetchProfile");
 const classDefaultColor = BdApi.findModuleByProps("defaultColor").defaultColor;
 
 var now;
@@ -72,7 +72,8 @@ function td(...content) {
 function guildsRemoved(guilds) {
 	// console.log(guilds);
 	// guilds.forEach(guild => BdApi.showToast("Removed from guild " + guild.name));
-	return guilds.map(({id, icon, joinedAt, name, owner}) => [
+	// return guilds.map(({id, icon, joinedAt, name, owner}) => [
+	return guilds.map(({id, icon, joinedAt, name, ownerId}) => [
 		BdApi.React.createElement("hr"),
 		BdApi.React.createElement("table", null, [
 			tr(td(
@@ -80,14 +81,15 @@ function guildsRemoved(guilds) {
 					src: `https://cdn.discordapp.com/icons/${id}/${icon}.webp?size=80`,
 					width: 48, height: 48,
 				}),
-				BdApi.React.createElement("img", {
-					src: `https://cdn.discordapp.com/avatars/${owner.id}/${owner.avatar}.webp?size=56`,
-					width: 48, height: 48,
-				}),
+				// BdApi.React.createElement("img", {
+					// src: `https://cdn.discordapp.com/avatars/${owner.id}/${owner.avatar}.webp?size=56`,
+					// width: 48, height: 48,
+				// }),
 			), td(field(name))),
-			tr(td(`Owner`), td(field(owner.tag))),
+			// tr(td(`Owner`), td(field(owner.tag))),
 			tr(td(`Guild ID`), td(field(id))),
-			tr(td(`Owner ID`), td(field(owner.id))),
+			// tr(td(`Owner ID`), td(field(owner.id))),
+			tr(td(`Owner ID`), td(field(ownerId))),
 			tr(td(`Joined`), td(field(formatDate(new Date(joinedAt))))),
 		])
 	]);
@@ -126,11 +128,14 @@ function check() {
 		BdApi.saveData("RemovalLog", "logRemoved", logRemoved.concat(removed));
 		
 		// render removed guilds and friends into React elements
+		/*
 		Promise.all([
 			// map each removed guild to a shallow clone that has an owner user object, then render them
 			Promise.all(removed.map(guild => modUserFetch.getUser(guild.ownerId).then(user => Object.assign({owner: user}, guild)))).then(guildsRemoved),
 			// promise.all(friends).then(friendsRemoved),
 		])
+		*/
+		new Promise(resolve => resolve(guildsRemoved(removed)))
 		// append a conclusion and display as a BdApi alert
 		.then(stuff => BdApi.alert(
 			"Removed from guilds",
@@ -139,7 +144,10 @@ function check() {
 				BdApi.React.createElement("p", null, `Last checked ${reltime(now - then)}`),
 			]))
 		))
-		.catch(e => BdApi.toast("RemovalLog Promise.all failed"));
+		.catch(e => {
+			BdApi.showToast("RemovalLog Promise.all failed");
+			console.error(e);
+		});
 	}
 	// const t0 = performance.now();
 	// BdApi.showToast("Checked left guilds in " + Math.floor(performance.now() - t0) + "ms");
