@@ -9,7 +9,8 @@
 const readClipboard = DiscordNative.clipboard.read;
 // const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
 // temporary measure
-const transitionTo = BdApi.Webpack.getModule((exports, module, index) => module.exports.uL && module.exports.DB);
+const transitionTo = BdApi.Webpack.getModule((exports, module, index) => module.exports.uL && module.exports.DB).uL;
+// BdApi.Webpack.getModule((exports, module, index) => index === "655695")
 const {getChannel, hasChannel} = BdApi.findModuleByProps("hasChannel");
 const {showToast} = BdApi;
 
