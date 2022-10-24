@@ -17,7 +17,7 @@ const [
 	["title", "form", "content"], // channel title bar, text input form and chat container
 	["sidebar", "guilds", "panels", "content"], // channels sidebar, guilds sidebar
 	["titleBar", "wordmark"], // top title bar
-	["buttonContainer", "username"], // message buttons
+	["buttonContainer", "zalgo"], // message buttons
 	["scroller", "messages"], // messages scroller
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 // todo: fail more gracefully when any of these go missing
