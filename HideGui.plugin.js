@@ -22,22 +22,21 @@ const [
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 // todo: fail more gracefully when any of these go missing
 
-const css = `
-.${title},
+const css =
+`.${title},
 .${form},
 .${sidebar},
 .${guilds},
 .${titleBar},
-.${buttonContainer} {
+.${buttonContainer},
+.${content}::before {
 	display: none;
 	
 } .${scroller} {
+	/* hide scrollbar */
 	right: -20px !important;
 	
-} .${content}::before {
-	height: 0 !important;
-}
-`;
+}`;
 
 /*
 2022-10-24
