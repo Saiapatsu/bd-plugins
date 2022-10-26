@@ -11,14 +11,16 @@ const [
 	{title, form, content},
 	{sidebar, guilds},
 	{titleBar},
-	{buttonContainer},
-	{scroller}
+	{buttonContainer, timestampVisibleOnHover},
+	{scroller},
+	{barBase},
 ] = BdApi.Webpack.getBulk(...[
 	["title", "form", "content"], // channel title bar, text input form and chat container
 	["sidebar", "guilds", "panels", "content"], // channels sidebar, guilds sidebar
 	["titleBar", "wordmark"], // top title bar
-	["buttonContainer", "zalgo"], // message buttons
+	["buttonContainer", "timestampVisibleOnHover", "zalgo"], // message buttons
 	["scroller", "messages"], // messages scroller
+	["barBase", "jumpToPresentBar"], // jump to old/new messages bars
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 // todo: fail more gracefully when any of these go missing
 
@@ -29,6 +31,8 @@ const css =
 .${guilds},
 .${titleBar},
 .${buttonContainer},
+.${timestampVisibleOnHover},
+.${barBase},
 .${content}::before {
 	display: none;
 	
