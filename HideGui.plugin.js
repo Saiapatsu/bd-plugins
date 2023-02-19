@@ -56,15 +56,15 @@ content-1jQy2l::before
 	height: 0;
 */
 
-var hidden = false;
+var active = false;
 
-function hide() {
-	hidden = true;
+function activate() {
+	active = true;
 	BdApi.DOM.addStyle("HideGui", css);
 }
 
-function show() {
-	hidden = false;
+function deactivate() {
+	active = false;
 	BdApi.DOM.removeStyle("HideGui", css);
 }
 
@@ -72,14 +72,11 @@ function listener(e) {
 	if (e.keyCode == 72 && e.ctrlKey && e.shiftKey && !e.altKey) { // Ctrl+Shift+H
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		hidden ? show() : hide();
+		active ? deactivate() : activate();
 	}
 }
 
 module.exports = class HideGui {
-	start =()=> document.body.   addEventListener("keydown", listener, true);
-	stop  =()=> {
-		document.body.removeEventListener("keydown", listener, true);
-		hidden && show();
-	}
+	start =()=> { document.body   .addEventListener("keydown", listener, true); }
+	stop  =()=> { document.body.removeEventListener("keydown", listener, true); active && deactivate(); }
 };
