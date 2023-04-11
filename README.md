@@ -2,8 +2,8 @@
 
 This is a selection of my personal BetterDiscord plugins.
 
-If you've found this and would like to use these plugins, then you are expected to be clueful enough to read, understand and modify the source code and to get them to Work On Your Machine(tm).  
-As such, the following blurbs are deliberately vague on the details of how to use the plugins.
+If you've found this and would like to use them, then you are expected to be clueful enough to read, understand and modify the source code and to get them to Work On Your Machine(tm).  
+As such, the following blurbs are deliberately vague.
 
 ## Goto
 
@@ -52,10 +52,14 @@ Periodically compares the guild list against a known state.
 Notifies of removed guilds with a modal and commits them to a log of removed guilds.  
 Does not listen to event dispatch because I cba to figure out how to do that without a library.
 
-Remembers the following about a guild:
+Remembers the following about a removed guild:
+
 * ID
 * Name
 * Owner
-* Icon ID (does not save icons, meaning it can go invalid in the meantime, a 404ing icon could indicate a deleted o nuked server)
 * Join date
-* Time range when a guild was removed (killer and unique feature)
+* Time range when a guild was removed (important and unique feature, if yours lacks this, then it's inadequate)
+* Icon ID
+
+It does not save icon images, so the icon IDs can go invalid in the meantime.  
+A 404ing icon could indicate a deleted or nuked server if it's unlikely to have simply changed it in the mean time.
