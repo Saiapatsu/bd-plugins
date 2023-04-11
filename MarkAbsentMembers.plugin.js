@@ -23,8 +23,7 @@ const [Plugin, BDFDB] = window.BDFDB_Global.PluginUtils.buildPlugin({
 // todo: invisible, but copyable <@id>
 // todo: minimize array allocations, memoize. for a start, add the props _randomly_ to see the current caching behavior (if any)
 
-const ChannelStore = BdApi.findModuleByProps("hasChannel");
-// also contains getMember, which we actually isn't needed to learn whether a user is a member
+const ChannelStore = BdApi.findModuleByProps("hasChannel", "getMember");
 const UserProfileStore = BdApi.findModuleByProps("getUserProfile", "getMutualGuilds");
 
 module.exports = class MarkAbsentMembers extends Plugin {
@@ -72,14 +71,18 @@ module.exports = class MarkAbsentMembers extends Plugin {
 	
 	asdasdasd = {className: "usernamereal"};
 	eqqwewqew = {className: "userdiscrim"};
+	newline = BdApi.React.createElement("br", {style: "display: inline;"});
 	
 	processMessageUsername(e) {
+		console.log("asdas", e);
 		const insprops = e.instance.props;
 		if (insprops.message.webhookId) return; // webhooks aren't users
 		
 		const retprops = e.returnvalue.props
 		const msgmember = insprops.author;
 		const msgauthor = insprops.message.author;
+		
+		// console.log(retprops);
 		
 		// add username and discrim
 		retprops.children.push([
@@ -107,7 +110,7 @@ module.exports = class MarkAbsentMembers extends Plugin {
 		
 		// watch your step
 		if (typeof messageusername.children !== "function") {
-			console.log("MessageUsername children isn't a function");
+			// console.log("MessageUsername children isn't a function");
 			return;
 		}
 		
@@ -129,6 +132,10 @@ module.exports = class MarkAbsentMembers extends Plugin {
 				messageusername.children = this.markAbsent;
 			}
 		}
+		
+		// add newline before username, which will show up when copying
+		// retprops.children.unshift(this.newline);
+		// crashes react!
 	}
 	
 	// the arrow function makes `this` remain this class
