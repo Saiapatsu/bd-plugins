@@ -11,7 +11,7 @@ const readClipboard = DiscordNative.clipboard.read;
 // temporary measure
 const transitionTo = BdApi.Webpack.getModule((exports, module, index) => module.exports.uL && module.exports.DB).uL;
 // BdApi.Webpack.getModule((exports, module, index) => index === "655695")
-const {getChannel, hasChannel} = BdApi.findModuleByProps("hasChannel");
+const {getChannel, hasChannel} = BdApi.findModuleByProps("getChannel", "hasChannel");
 const {showToast} = BdApi;
 
 function msecToSnowflake(num) {
