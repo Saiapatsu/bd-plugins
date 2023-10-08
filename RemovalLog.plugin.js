@@ -17,9 +17,16 @@ act immediately when a guild/friend removal event is dispatched
 
 */
 
-const modGuilds = BdApi.findModuleByProps("getGuilds", "getGuild", "getGuildCount");
+const [
+	{getGuilds},
+	{defaultColor: classDefaultColor},
+] = BdApi.Webpack.getBulk(...[
+	["getGuilds", "getGuild", "getGuildCount"],
+	["defaultColor"],
+].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
+
 // const modUserFetch = BdApi.findModuleByProps("getUser", "fetchProfile");
-const classDefaultColor = BdApi.findModuleByProps("defaultColor").defaultColor;
+// const classDefaultColor = BdApi.findModuleByProps("defaultColor").defaultColor;
 
 var now;
 
@@ -101,10 +108,10 @@ function saveGuild({id, icon, joinedAt, name, ownerId}) {
 
 function check() {
 	// it's probably faster to sort guilds and iterate over both arrays to get a diff
-	const guilds = Object.values(modGuilds.getGuilds());
-	const lastGuilds = BdApi.loadData("RemovalLog", "lastGuilds") || [];
+	const guilds = Object.values(getGuilds());
+	const lastGuilds = BdApi.Data.load("RemovalLog", "lastGuilds") || [];
 	now = Date.now(); // global because that's the easy way
-	const then = BdApi.loadData("RemovalLog", "lastCheckTime") || now;
+	const then = BdApi.Data.load("RemovalLog", "lastCheckTime") || now;
 	const removed = [];
 	
 	// find all guilds that aren't in current guild list, but are in last guild list
@@ -115,8 +122,8 @@ function check() {
 	
 	// update last seen guild list. has to be done every time
 	// to account for guild additions, name changes etc.
-	BdApi.saveData("RemovalLog", "lastGuilds", guilds.map(saveGuild));
-	BdApi.saveData("RemovalLog", "lastCheckTime", now);
+	BdApi.Data.save("RemovalLog", "lastGuilds", guilds.map(saveGuild));
+	BdApi.Data.save("RemovalLog", "lastCheckTime", now);
 	
 	// display removed guilds
 	if (removed.length) {
@@ -124,8 +131,8 @@ function check() {
 		removed.forEach(x => {x.minDate = then; x.maxDate = now});
 		
 		// add removed guilds to log
-		const logRemoved = BdApi.loadData("RemovalLog", "logRemoved") || [];
-		BdApi.saveData("RemovalLog", "logRemoved", logRemoved.concat(removed));
+		const logRemoved = BdApi.Data.load("RemovalLog", "logRemoved") || [];
+		BdApi.Data.save("RemovalLog", "logRemoved", logRemoved.concat(removed));
 		
 		// render removed guilds and friends into React elements
 		/*
@@ -137,7 +144,7 @@ function check() {
 		*/
 		new Promise(resolve => resolve(guildsRemoved(removed)))
 		// append a conclusion and display as a BdApi alert
-		.then(stuff => BdApi.alert(
+		.then(stuff => BdApi.UI.alert(
 			"Removed from guilds",
 			BdApi.React.createElement("div", {class: classDefaultColor}, stuff.concat([
 				BdApi.React.createElement("hr"),
@@ -145,7 +152,7 @@ function check() {
 			]))
 		))
 		.catch(e => {
-			BdApi.showToast("RemovalLog Promise.all failed");
+			BdApi.UI.showToast("RemovalLog Promise.all failed");
 			console.error(e);
 		});
 	}

@@ -7,7 +7,6 @@
  */
 
 const readClipboard = DiscordNative.clipboard.read;
-const {showToast} = BdApi;
 const [
 	{getGuildId},
 ] = BdApi.Webpack.getBulk(...[
@@ -28,23 +27,23 @@ function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
 		const UserProfileUtils = getUserProfileUtils();
 		if (!UserProfileUtils) {
-			showToast("BDFDB isn't hijacked, unable to getUserProfileUtils");
+			BdApi.UI.showToast("BDFDB isn't hijacked, unable to getUserProfileUtils");
 			return;
 		}
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		const clip = readClipboard();
 		const match = clip.match(/^\s*(\d+)\s*$/);
-		if (!match) return showToast("Clipboard is not a user ID", {type: "warning"});
+		if (!match) return BdApi.UI.showToast("Clipboard is not a user ID", {type: "warning"});
 		const str = match[1];
 		const guildId = getGuildId() || "0";
-		showToast(str);
+		BdApi.UI.showToast(str);
 		UserProfileUtils.getUser(str)
 			.then(user => UserProfileUtils.openUserProfileModal({
 				userId: str,
 				guildId: guildId,
 			}))
-			.catch(res => showToast(res.text + "\n(This user might not exist)", {type: "warning"}));
+			.catch(res => BdApi.UI.showToast(res.text + "\n(This user might not exist)", {type: "warning"}));
 	}
 }
 

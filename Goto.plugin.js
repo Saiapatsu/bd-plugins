@@ -11,8 +11,11 @@ const readClipboard = DiscordNative.clipboard.read;
 // temporary measure
 const transitionTo = BdApi.Webpack.getModule((exports, module, index) => module.exports.uL && module.exports.DB).uL;
 // BdApi.Webpack.getModule((exports, module, index) => index === "655695")
-const {getChannel, hasChannel} = BdApi.findModuleByProps("getChannel", "hasChannel");
-const {showToast} = BdApi;
+const [
+	{getChannel, hasChannel},
+] = BdApi.Webpack.getBulk(...[
+	["getChannel", "hasChannel"],
+].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
 
 function msecToSnowflake(num) {
 	return BigInt(num - 1420070400000) << 22n // 22n is BigInt(22);
@@ -70,13 +73,13 @@ function listener(e) {
 		const str = readClipboard()
 		const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
 		let [message, channel, server] = decode(str);
-		if (!message) return showToast("Incomprehensible\n" + str, {type: "warning"});
+		if (!message) return BdApi.UI.showToast("Incomprehensible\n" + str, {type: "warning"});
 		if (!Number(server) && channel) server = getChannel(channel)?.guild_id || server;
 		channel = channel || thischannel;
 		server = server || thisserver;
-		if (!server || !channel) return showToast("Cannot resolve\n" + str, {type: "warning"});
-		if (server !== "@me" && !hasChannel(channel)) return showToast("Unknown channel\n" + str, {type: "warning"});
-		showToast(str);
+		if (!server || !channel) return BdApi.UI.showToast("Cannot resolve\n" + str, {type: "warning"});
+		if (server !== "@me" && !hasChannel(channel)) return BdApi.UI.showToast("Unknown channel\n" + str, {type: "warning"});
+		BdApi.UI.showToast(str);
 		transitionTo(`/channels/${server}/${channel}/${message}`);
 		
 	} else if (e.keyCode == 33 && e.ctrlKey && e.shiftKey && !e.altKey) { // Ctrl+Shift+PageUp
