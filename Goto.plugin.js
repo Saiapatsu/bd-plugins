@@ -9,12 +9,14 @@
 const readClipboard = DiscordNative.clipboard.read;
 // const {transitionTo} = BdApi.findModuleByProps("transitionTo"); // this gets the navigator module, which contains transitionTo
 // temporary measure
-const transitionTo = BdApi.Webpack.getModule((exports, module, index) => module.exports.uL && module.exports.DB).uL;
+// const transitionTo = BdApi.Webpack.getModule((exports, module, index) => module.exports.uL && module.exports.DB).uL;
 // BdApi.Webpack.getModule((exports, module, index) => index === "655695")
 const [
 	{getChannel, hasChannel},
+	{transitionTo},
 ] = BdApi.Webpack.getBulk(...[
 	["getChannel", "hasChannel"],
+	["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
 
 function msecToSnowflake(num) {
@@ -70,7 +72,7 @@ function listener(e) {
 		// Go to message in clipboard
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		const str = readClipboard()
+		const str = readClipboard().trim();
 		const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
 		let [message, channel, server] = decode(str);
 		if (!message) return BdApi.UI.showToast("Incomprehensible\n" + str, {type: "warning"});
