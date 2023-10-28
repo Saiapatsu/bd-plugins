@@ -9,27 +9,16 @@
 const readClipboard = DiscordNative.clipboard.read;
 const [
 	{getGuildId},
+	{openUserProfileModal},
+	{getUser: fetchUser},
 ] = BdApi.Webpack.getBulk(...[
 	["getGuildId", "getLastSelectedGuildId"],
+	["openUserProfileModal", "closeUserProfileModal"], // IT'S BACK
+	["getUser", "fetchProfile", "fetchCurrentUser", "acceptAgreements"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
-// const {getGuildId} = BdApi.findModuleByProps("getLastSelectedGuildId");
-// const {openUserProfileModal} = BdApi.findModuleByProps("openUserProfileModal");
-// const {getUser} = BdApi.findModuleByProps("getUser");
-
-const getUserProfileUtils = () => window?.BDFDBInternal?.LibraryModules?.UserProfileUtils;
-
-// openUserProfileModal isn't even in BDFDB, can't think of what it could have
-// possibly been renamed to
-// unlike ol' reliable GetUser or the thing that returns the user profile as JSON
-// Oh good, the user profile modal sucks solid logs of shit anyway - gotta roll my own
 
 function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
-		const UserProfileUtils = getUserProfileUtils();
-		if (!UserProfileUtils) {
-			BdApi.UI.showToast("BDFDB isn't hijacked, unable to getUserProfileUtils");
-			return;
-		}
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		const clip = readClipboard();
@@ -38,8 +27,8 @@ function listener(e) {
 		const str = match[1];
 		const guildId = getGuildId() || "0";
 		BdApi.UI.showToast(str);
-		UserProfileUtils.getUser(str)
-			.then(user => UserProfileUtils.openUserProfileModal({
+		fetchUser(str)
+			.then(user => openUserProfileModal({
 				userId: str,
 				guildId: guildId,
 			}))
