@@ -15,14 +15,17 @@ const [
 	{scroller},
 	{barBase},
 ] = BdApi.Webpack.getBulk(...[
-	["title", "form", "content"], // channel title bar, text input form and chat container
+	// channel title bar, text input form and chat container
+	["title", "form", "content", "titleWrapper", "channelName", "chat", "noChat", "typing", "loader", "status"],
 	["sidebar", "guilds", "panels", "content"], // channels sidebar, guilds sidebar
 	["titleBar", "wordmark"], // top title bar
 	["buttonContainer", "timestampVisibleOnHover", "zalgo"], // message buttons
-	["scroller", "messages"], // messages scroller
+	["scroller", "scrollerInner", "messages", "empty", "divider"], // messages scroller
 	["barBase", "jumpToPresentBar"], // jump to old/new messages bars
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 // todo: fail more gracefully when any of these go missing
+// example to get the module with a class:
+// BdApi.findAllModules(x => x.form == "form__13a2c")
 
 const css =
 `.${title},
