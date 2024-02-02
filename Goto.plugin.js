@@ -36,6 +36,13 @@ function regexToSnowflake(arr) {
 const decoders = [
 	// attachment link
 	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
+	// titled link
+	str => {
+		const url = new URL(str);
+		const params = new URLSearchParams(url.hash.slice(1));
+		if (params.get("origin") !== "discord") return;
+		return [params.get("messageid"), params.get("channelid"), params.get("serverid")];
+	},
 	// YYYYMMDDHHMMSS
 	str => regexToSnowflake(/^\s*(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*$/.exec(str)),
 	// YYYY-MM-DD HH:MM:SS
