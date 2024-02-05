@@ -97,13 +97,14 @@ function guildsRemoved(guilds) {
 			tr(td(`Guild ID`), td(field(id))),
 			// tr(td(`Owner ID`), td(field(owner.id))),
 			tr(td(`Owner ID`), td(field(ownerId))),
-			tr(td(`Joined`), td(field(formatDate(new Date(joinedAt))))),
+			// HACK 20240205081607 joinedat will be null in preview servers
+			tr(td(`Joined`), td(field(joinedAt ? formatDate(new Date(joinedAt)) : "PREVIEW"))),
 		])
 	]);
 }
 
 function saveGuild({id, icon, joinedAt, name, ownerId}) {
-	return {id, icon, joinedAt: joinedAt.valueOf(), name, ownerId};
+	return {id, icon, joinedAt: (joinedAt ? joinedAt.valueOf() : null), name, ownerId};
 }
 
 function check() {
