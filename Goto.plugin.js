@@ -48,6 +48,8 @@ const decoders = [
 	// YYYY-MM-DD HH:MM:SS
 	// str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
 	str => regexToSnowflake(/^\s*(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)\s*$/.exec(str)),
+	// Pair of channel and message separated by space, needed this once
+	str => str.match(/^(\d+) (\d+)$/).slice(1).reverse().filter(Boolean),
 	// Unix seconds or milliseconds timestamp between Discord epoch and now
 	// collision with snowflakes won't be a concern within my lifetime
 	str => {str = Number(/\s*(\d+)\s*/.exec(str)[1]);
@@ -87,7 +89,15 @@ function listener(e) {
 		channel = channel || thischannel;
 		server = server || thisserver;
 		if (!server || !channel) return BdApi.UI.showToast("Cannot resolve\n" + str, {type: "warning"});
-		if (server !== "@me" && !hasChannel(channel)) return BdApi.UI.showToast("Unknown channel\n" + str, {type: "warning"});
+		if (server !== "@me" && !hasChannel(channel)) {
+			const rope = [
+				"server " + server,
+				"channel " + channel,
+				"message " + message,
+				str,
+			];
+			return BdApi.UI.showToast("Unknown channel\n" + rope.join("\n"), {type: "warning"});
+		}
 		BdApi.UI.showToast(str);
 		transitionTo(`/channels/${server}/${channel}/${message}`);
 		
