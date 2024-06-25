@@ -8,35 +8,35 @@
  */
 
 const [
-	{title, form, content},
-	{sidebar, guilds},
-	{titleBar},
-	{buttonContainer, timestampVisibleOnHover},
-	{scroller},
-	{barBase},
+	{form}, // message input form
+	{typeWindows}, // top bar/window chrome
+	{subtitleContainer}, // channel title bar
+	{sidebar, guilds}, // channels sidebar, guilds sidebar
+	{buttonContainer, timestampVisibleOnHover}, // hover action buttons
+	{jumpToPresentBar}, // jump to old/new messages bars
+	{scroller}, // messages scroller, used to hide scrollbar
 ] = BdApi.Webpack.getBulk(...[
-	// channel title bar, text input form and chat container
-	["title", "form", "content", "titleWrapper", "channelName", "chat", "noChat", "typing", "loader", "status"],
-	["sidebar", "guilds", "panels", "content"], // channels sidebar, guilds sidebar
-	["titleBar", "wordmark"], // top title bar
-	["buttonContainer", "timestampVisibleOnHover", "zalgo"], // message buttons
-	["scroller", "scrollerInner", "messages", "empty", "divider"], // messages scroller
-	["barBase", "jumpToPresentBar"], // jump to old/new messages bars
+	["form", "content", "chat"],
+	["typeWindows"],
+	["subtitleContainer"],
+	["sidebar", "guilds", "panels", "content"],
+	["buttonContainer", "timestampVisibleOnHover", "zalgo"],
+	["jumpToPresentBar"],
+	["scroller", "empty", "messagesWrapper"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
-// todo: fail more gracefully when any of these go missing
-// example to get the module with a class:
-// BdApi.findAllModules(x => x.form == "form__13a2c")
 
-const css =
-`.${title},
+/*
+.${titleBar},
+.${content}::before,
+*/ const css =`
 .${form},
+.${typeWindows.slice(0, 18)},
+.${subtitleContainer},
 .${sidebar},
 .${guilds},
-.${titleBar},
 .${buttonContainer},
 .${timestampVisibleOnHover},
-.${barBase},
-.${content}::before {
+.${jumpToPresentBar.slice(-14)} {
 	display: none;
 	
 } .${scroller} {
@@ -44,6 +44,18 @@ const css =
 	right: -20px !important;
 	
 }`;
+
+console.log(css);
+
+// todo: fail more gracefully when any of these go missing
+// example to get the module with a class:
+// BdApi.findAllModules(x => x.form == "form__13a2c")
+
+/*
+2024-06-25
+form_a7d72e
+typeWindows_a934d8
+*/
 
 /*
 2022-10-24
