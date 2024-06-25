@@ -13,11 +13,27 @@ const readClipboard = DiscordNative.clipboard.read;
 // BdApi.Webpack.getModule((exports, module, index) => index === "655695")
 const [
 	{getChannel, hasChannel},
-	{transitionTo},
+	{uL: transitionTo},
 ] = BdApi.Webpack.getBulk(...[
 	["getChannel", "hasChannel"],
-	["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
+	// ["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
+	["At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
+
+/*
+		function S(e, t, n, o) {
+			!h(e, "assign") && (c.log("transitionTo - Transitioning to ".concat(e)),
+			null != n && (null == t ? t = {
+				source: n
+			} : t.source = n),
+			null == t ? i.push(e) : i.push({
+				pathname: e,
+				...t
+			}),
+			r = n,
+			s = o)
+		}
+*/
 
 function msecToSnowflake(num) {
 	return BigInt(num - 1420070400000) << 22n // 22n is BigInt(22);
