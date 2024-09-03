@@ -15,6 +15,7 @@ const [
 	{buttonContainer, timestampVisibleOnHover}, // hover action buttons
 	{jumpToPresentBar}, // jump to old/new messages bars
 	{scroller}, // messages scroller, used to hide scrollbar
+	{content},
 ] = BdApi.Webpack.getBulk(...[
 	["form", "content", "chat"],
 	["typeWindows"],
@@ -23,6 +24,7 @@ const [
 	["buttonContainer", "timestampVisibleOnHover", "zalgo"],
 	["jumpToPresentBar"],
 	["scroller", "empty", "messagesWrapper"],
+	["content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 
 /*
@@ -38,6 +40,9 @@ const [
 .${timestampVisibleOnHover},
 .${jumpToPresentBar.slice(-14)} {
 	display: none;
+	
+}.${content}::before {
+	content: unset;
 	
 } .${scroller} {
 	/* hide scrollbar */
