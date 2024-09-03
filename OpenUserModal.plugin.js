@@ -10,11 +10,11 @@ const readClipboard = DiscordNative.clipboard.read;
 const [
 	{getGuildId},
 	{openUserProfileModal},
-	{getUser: fetchUser},
+	{PR: fetchUser}, // {getUser: fetchUser},
 ] = BdApi.Webpack.getBulk(...[
 	["getGuildId", "getLastSelectedGuildId"],
 	["openUserProfileModal", "closeUserProfileModal"], // IT'S BACK
-	["getUser", "fetchProfile", "fetchCurrentUser", "acceptAgreements"],
+	["In", "Lr", "PR", "k", "mB"], // ["getUser", "fetchProfile", "fetchCurrentUser", "acceptAgreements"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
 
 function listener(e) {
