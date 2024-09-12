@@ -10,21 +10,19 @@
 const [
 	{form}, // message input form
 	{typeWindows}, // top bar/window chrome
-	{subtitleContainer}, // channel title bar
 	{sidebar, guilds}, // channels sidebar, guilds sidebar
 	{buttonContainer, timestampVisibleOnHover}, // hover action buttons
 	{jumpToPresentBar}, // jump to old/new messages bars
 	{scroller}, // messages scroller, used to hide scrollbar
-	{content},
+	{content, subtitleContainer}, // channel chat content, channel title bar
 ] = BdApi.Webpack.getBulk(...[
 	["form", "content", "chat"],
 	["typeWindows"],
-	["subtitleContainer"],
 	["sidebar", "guilds", "panels", "content"],
 	["buttonContainer", "timestampVisibleOnHover", "zalgo"],
 	["jumpToPresentBar"],
 	["scroller", "empty", "messagesWrapper"],
-	["content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
+	["subtitleContainer", "content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 
 /*
