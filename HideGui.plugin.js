@@ -29,6 +29,7 @@ const [
 .${titleBar},
 .${content}::before,
 */ const css =`
+.bgdarBase, /* from newMessagesBar */
 .${form},
 .${typeWindows.slice(0, 18)},
 .${subtitleContainer},
