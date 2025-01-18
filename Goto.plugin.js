@@ -14,10 +14,12 @@ const readClipboard = DiscordNative.clipboard.read;
 const [
 	{getChannel, hasChannel},
 	{uL: transitionTo},
+	UnreadsStore,
 ] = BdApi.Webpack.getBulk(...[
 	["getChannel", "hasChannel"],
 	// ["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
 	["At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv"],
+	["getReadStatesByChannel", "getMentionCount"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
 
 /*
@@ -123,6 +125,27 @@ function listener(e) {
 		e.stopImmediatePropagation();
 		const [, server, channel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
 		transitionTo(`/channels/${server}/${channel}/0`);
+		
+	} else if (e.keyCode == 33 && !e.ctrlKey && e.shiftKey && e.altKey) { // Alt+Shift+PageUp
+		// Go to last unread/acked message, this was added because the built-in
+		// keybind for this often refuses to work. Aha, it's because
+		// getOldestUnreadMessageId respects e.canTrackUnreads. I can't find the
+		// module with that method, otherwise I'd make a plugin to dummy it out
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		
+		// TODO use the correct method to get current channel
+		const [, server, channel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
+		if (!channel) return BdApi.UI.showToast("Could not identify current channel", {type: "warning"});
+		
+		const state = UnreadsStore.getReadStatesByChannel()[channel];
+		const message = state?.ackMessageId;
+		if (message) {
+			transitionTo(`/channels/${server}/${channel}/${message}`);
+		} else {
+			BdApi.UI.showToast("Could not get oldest unread message, going to 0", {type: "warning"});
+			transitionTo(`/channels/${server}/${channel}/0`);
+		}
 	}
 }
 
