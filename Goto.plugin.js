@@ -52,8 +52,6 @@ function regexToSnowflake(arr) {
 
 // a decoder returns either false, empty array or a string[] message, channel?, server?
 const decoders = [
-	// attachment link
-	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
 	// titled link
 	str => {
 		const url = new URL(str);
@@ -61,6 +59,8 @@ const decoders = [
 		if (params.get("origin") !== "discord") return;
 		return [params.get("messageid"), params.get("channelid"), params.get("serverid")];
 	},
+	// attachment link
+	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
 	// YYYYMMDDHHMMSS
 	str => regexToSnowflake(/^\s*(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*$/.exec(str)),
 	// YYYY-MM-DD HH:MM:SS
