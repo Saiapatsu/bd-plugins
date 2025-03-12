@@ -67,13 +67,15 @@ const decoders = [
 	// str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
 	str => regexToSnowflake(/^\s*(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)\s*$/.exec(str)),
 	// Pair of channel and message separated by space, needed this once
-	str => str.match(/^(\d+) (\d+)$/).slice(1).reverse().filter(Boolean),
+	str => str.match(/^\s*(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
 	// Unix seconds or milliseconds timestamp between Discord epoch and now
 	// collision with snowflakes won't be a concern within my lifetime
-	str => {str = Number(/\s*(\d+)\s*/.exec(str)[1]);
+	str => {
+		str = Number(/\s*(\d+)\s*/.exec(str)[1]);
 		return str
 			&& (str >= 1420070400    && str < Date.now() / 1000) ? msecToSnowflake(str * 1000)
-			:  (str >= 1420070400000 && str < Date.now()        && msecToSnowflake(str       ))},
+			:  (str >= 1420070400000 && str < Date.now()        && msecToSnowflake(str       ))
+	},
 	// discord message url or just message id, tolerating a comment after a space
 	str => str.match(/\S*/)[0].match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
 ];
