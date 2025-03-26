@@ -7,9 +7,13 @@
  * @source https://github.com/Saiapatsu/bd-plugins/blob/master/HideGui.plugin.js
  */
 
+// todo: fail more gracefully when any of these go missing
+// example to get the module with a class:
+// BdApi.findAllModules(x => x.form == "form__13a2c")
+
 const [
-	{form}, // message input form
-	{typeWindows}, // top bar/window chrome
+	{form, chat}, // message input form, chat scroller wrapper
+	{bar}, // title bar/window chrome
 	{sidebar, guilds}, // channels sidebar, guilds sidebar
 	{buttonContainer, timestampVisibleOnHover}, // hover action buttons
 	{jumpToPresentBar}, // jump to old/new messages bars
@@ -17,7 +21,7 @@ const [
 	{content, subtitleContainer}, // channel chat content, channel title bar
 ] = BdApi.Webpack.getBulk(...[
 	["form", "content", "chat"],
-	["typeWindows"],
+	["bar", "systemBar"],
 	["sidebar", "guilds", "panels", "content"],
 	["buttonContainer", "timestampVisibleOnHover", "zalgo"],
 	["jumpToPresentBar"],
@@ -25,54 +29,54 @@ const [
 	["subtitleContainer", "content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 
-/*
-.${titleBar},
-.${content}::before,
-*/ const css =`
-.bgdarBase, /* from newMessagesBar */
+// bgdarBase is from newMessagesBar
+const css =`
+.bgdarBase,
 .${form},
-.${typeWindows.slice(0, 18)},
+.${bar},
 .${subtitleContainer},
 .${sidebar},
 .${guilds},
 .${buttonContainer},
 .${timestampVisibleOnHover},
 .${jumpToPresentBar.slice(-14)} {
-	display: none;
+	display: none !important;
 	
 }.${content}::before {
 	content: unset;
 	
+}.${chat} {
+	border-top: unset !important;
+	
 } .${scroller} {
-	/* hide scrollbar */
 	right: -20px !important;
 	
 }`;
 
 console.log(css);
 
-// todo: fail more gracefully when any of these go missing
-// example to get the module with a class:
-// BdApi.findAllModules(x => x.form == "form__13a2c")
-
 /*
-2024-06-25
-form_a7d72e
-typeWindows_a934d8
-*/
-
-/*
-2022-10-24
-sidebar-1tnWFu
-wrapper-1_HaEi guilds-2JjMmN
-title-31SJ6t container-ZMc96U themed-Hp1KC_
-form-3gdLxP
-typeWindows-2-g3UY withFrame-2dL45i titleBar-1it3bQ horizontalReverse-2QssvL flex-3BkGQD directionRowReverse-HZatnx justifyStart-2Mwniq alignStretch-Uwowzr
-buttonContainer-1502pf
-scroller-kQBbkU auto-2K3UW5 scrollerBase-_bVAAt disableScrollAnchor-6TwzvM managedReactiveScroller-1lEEh3
-	right: -20px;
-content-1jQy2l::before
-	height: 0;
+2025-03-26
+.bgdarBase,
+.form_f75fb0,
+.bar_c38106,
+.subtitleContainer_f75fb0,
+.sidebar_c48ade,
+.guilds_c48ade,
+.buttonContainer_c19a55,
+.timestampVisibleOnHover_c19a55,
+.barBase__0f481 {
+	display: none !important;
+	
+}.content_f75fb0::before {
+	content: unset;
+	
+}.chat_f75fb0 {
+	border-top: unset !important;
+	
+} .scroller__36d07 {
+	right: -20px !important;
+}
 */
 
 var active = false;
