@@ -17,22 +17,46 @@ const [
 	["In", "Lr", "PR", "k", "mB"], // ["getUser", "fetchProfile", "fetchCurrentUser", "acceptAgreements"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
 
+const copyClipboard = DiscordNative.clipboard.copy;
+const MessageStore = BdApi.Webpack.getStore("MessageStore");
+
+function tryMessage(match) {
+	if (!match) return;
+	const [, cid, mid] = match
+	const message = MessageStore.getMessage(cid, mid)
+	if (message) {
+		copyClipboard(message.content + "\n" + JSON.stringify(message));
+		BdApi.UI.showToast(cid + "/" + mid + "\nCopied");
+	} else {
+		BdApi.UI.showToast(cid + "/" + mid + "\nCan't find this message", {type: "warning"});
+	}
+	return true;
+}
+
+function tryUser(match) {
+	if (!match) return;
+	const str = match[1];
+	const guildId = getGuildId() || "0";
+	BdApi.UI.showToast(str);
+	fetchUser(str)
+		.then(user => openUserProfileModal({
+			userId: str,
+			guildId: guildId,
+		}))
+		.catch(res => BdApi.UI.showToast(res.text + "\n(This user might not exist)", {type: "warning"}));
+	return true;
+}
+
 function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		const clip = readClipboard();
-		const match = clip.match(/^\s*(\d+)\s*$/);
-		if (!match) return BdApi.UI.showToast("Clipboard is not a user ID", {type: "warning"});
-		const str = match[1];
-		const guildId = getGuildId() || "0";
-		BdApi.UI.showToast(str);
-		fetchUser(str)
-			.then(user => openUserProfileModal({
-				userId: str,
-				guildId: guildId,
-			}))
-			.catch(res => BdApi.UI.showToast(res.text + "\n(This user might not exist)", {type: "warning"}));
+		if (tryUser(clip.match(/^\s*(\d+)\s*$/)))
+			return;
+		if (tryMessage(clip.match(/^\s*https:\/\/discord.com\/channels\/\d+\/(\d+)\/(\d+)\s*$/)))
+			return;
+		return BdApi.UI.showToast("Clipboard is not a user ID or message URL", {type: "warning"});
 	}
 }
 
