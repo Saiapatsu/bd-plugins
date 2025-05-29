@@ -23,18 +23,44 @@ const [
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
 
 /*
-		function S(e, t, n, o) {
-			!h(e, "assign") && (c.log("transitionTo - Transitioning to ".concat(e)),
-			null != n && (null == t ? t = {
-				source: n
-			} : t.source = n),
-			null == t ? i.push(e) : i.push({
-				pathname: e,
-				...t
-			}),
-			r = n,
-			s = o)
-		}
+copy(Object.entries(BdApi.Webpack.getByKeys("At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv")).map(([k, v]) => k + ": " + v.toString()).join("\n\n"))
+
+At: function S(){return i}
+
+DB: function C(){return h}
+
+DR: function T(){return a}
+
+Wf: function N(e){if(null==e){var t;e=null!=(t=r.location.pathname)?t:""}if(e.startsWith(u.Z5c.LOGIN))return u.Usc.LOGIN;if(e.startsWith(u.Z5c.REGISTER))return u.Usc.REGISTER;if(e.startsWith(u.Z5c.INVITE("")))return u.Usc.INVITE;if(e.startsWith(u.Z5c.VERIFY))return u.Usc.VERIFY;if(e.startsWith(u.Z5c.DISABLE_EMAIL_NOTIFICATIONS))return u.Usc.DISABLE_EMAIL_NOTIFICATIONS;else if(e.startsWith(u.Z5c.DISABLE_SERVER_HIGHLIGHT_NOTIFICATIONS))return u.Usc.DISABLE_SERVER_HIGHLIGHT_NOTIFICATIONS;else if(e.startsWith(u.Z5c.REJECT_IP))return u.Usc.REJECT_IP;else if(e.startsWith(u.Z5c.REJECT_MFA))return u.Usc.REJECT_MFA;else if(e.startsWith(u.Z5c.AUTHORIZE_IP))return u.Usc.AUTHORIZE_IP;else if(e.startsWith(u.Z5c.AUTHORIZE_PAYMENT))return u.Usc.AUTHORIZE_PAYMENT;else if(e.startsWith(u.Z5c.RESET))return u.Usc.RESET;else if(e.startsWith(u.Z5c.REPORT))return u.Usc.REPORT;else if(e.startsWith(u.Z5c.REPORT_SECOND_LOOK))return u.Usc.REPORT_SECOND_LOOK;else if(e.startsWith(u.Z5c.ACCOUNT_REVERT("")))return u.Usc.ACCOUNT_REVERT;return e}
+
+XU: function y(e,t,n,r){_.log("transitionToGuild - Transitioning to ".concat(JSON.stringify({guildId:e,channelId:t,messageId:n}))),b(u.Z5c.CHANNEL(e,t,n),r)}
+
+dL: function v(e,t,n){E(e,"replace")||(_.log("Replacing route with ".concat(e)),"string"==typeof e?r.replace(e,t):r.replace(e),i=n)}
+
+eH: function R(){g()&&(i=null,r.goForward())}
+
+m1: function A(e){if(null==e){var t;e=null!=(t=r.location.pathname)?t:""}return!e.startsWith(u.Z5c.HANDOFF)}
+
+op: function P(){g()&&(i=null,r.goBack())}
+
+s1: function I(){return r}
+
+uL: function b(e,t){if(E(e,"assign"))return;_.log("transitionTo - Transitioning to ".concat(e));let n=null==t?void 0:t.source;null==t||delete t.source;let o=null==t?void 0:t.sourceLocationStack;if(null==t||delete t.sourceLocationStack,null==t)r.push(e);else{let n=new URL(e,"https:".concat(window.GLOBAL_ENV.WEBAPP_ENDPOINT));r.push(f({pathname:n.pathname,search:n.search,hash:n.hash},t))}i=n,a=o}
+
+uv: function O(){return null!=i&&c.H.has(i)}
+
+function S(e, t, n, o) {
+	!h(e, "assign") && (c.log("transitionTo - Transitioning to ".concat(e)),
+	null != n && (null == t ? t = {
+		source: n
+	} : t.source = n),
+	null == t ? i.push(e) : i.push({
+		pathname: e,
+		...t
+	}),
+	r = n,
+	s = o)
+}
 */
 
 function msecToSnowflake(num) {
