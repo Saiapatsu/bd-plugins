@@ -89,38 +89,36 @@ const decoders = [
 	// attachment link
 	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
 	// YYYYMMDDHHMMSS
-	str => [regexToSnowflake(/^\s*(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*$/.exec(str))],
+	str => [regexToSnowflake(/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)$/.exec(str))],
 	// YYYY-MM-DD HH:MM:SS
-	// str => regexToSnowflake(/^\s*(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)\s*$/.exec(str)),
-	str => [regexToSnowflake(/^\s*(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)\s*$/.exec(str))],
+	// str => regexToSnowflake(/^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)$/.exec(str)),
+	str => [regexToSnowflake(/^(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)$/.exec(str))],
 	// Pair of channel and message separated by space, needed this once
-	str => str.match(/^\s*(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
+	str => str.match(/^(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
 	// Unix seconds or milliseconds timestamp between Discord epoch and now
 	// collision with snowflakes won't be a concern within my lifetime
 	str => {
-		str = Number(/\s*(\d+)\s*/.exec(str)[1]);
+		str = Number(/\d+/.exec(str)[0]);
 		return [str
 			&& (str >= 1420070400    && str < Date.now() / 1000) ? msecToSnowflake(str * 1000)
 			:  (str >= 1420070400000 && str < Date.now()        && msecToSnowflake(str       ))]
 	},
 	// discord message url or just message id, tolerating a comment after a space
-	str => str.match(/\S*/)[0].match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
+	str => str.match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
 ];
 
-// returns false or array
-// function verify(value) {
-	// // return value && (typeof value == "object" ? (value.length && value) : [value]);
-	// return value;
-// }
+// returns falsy or array
+function verify(value) {
+	return value && (value[0] === null || value[0]) && value;
+}
 
 // returns array [message, channel, server]
 function decode(str) {
 	let value;
 	for (var f of decoders)
 		try {
-			return f(str);
-			// if (value = verify(f(str)))
-				// return value;
+			if (value = verify(f(str)))
+				return value;
 		} catch (e) {}
 	return [];
 }
