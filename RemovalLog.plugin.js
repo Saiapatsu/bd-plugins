@@ -132,7 +132,7 @@ function check() {
 	
 	if (changed) {
 		BdApi.UI.showToast("RemovalLog: a guild changed");
-		BdApi.Data.save("RemovalLogCache", "lastGuilds", currGuilds.map(saveGuild));
+		BdApi.Data.save("RemovalLogCache", "lastGuilds", Object.values(currGuilds).map(saveGuild));
 	} else {
 		// BdApi.UI.showToast("RemovalLog: no changes");
 		return;
