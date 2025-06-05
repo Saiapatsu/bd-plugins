@@ -28,7 +28,7 @@ const [
 // const modUserFetch = BdApi.findModuleByProps("getUser", "fetchProfile");
 // const classDefaultColor = BdApi.findModuleByProps("defaultColor").defaultColor;
 
-var now;
+var currCheck;
 
 const units = [
 	["year"  , 31536000000, 63072000000], // 24 months
@@ -108,32 +108,44 @@ function saveGuild({id, icon, joinedAt, name, ownerId}) {
 }
 
 function check() {
-	// it's probably faster to sort guilds and iterate over both arrays to get a diff
-	const guilds = Object.values(getGuilds());
-	const lastGuilds = BdApi.Data.load("RemovalLog", "lastGuilds") || [];
-	now = Date.now(); // global because that's the easy way
-	const then = BdApi.Data.load("RemovalLog", "lastCheckTime") || now;
+	const currGuilds = getGuilds(); // Object, not array
+	const lastGuilds = BdApi.Data.load("RemovalLogCache", "lastGuilds") || [];
 	const removed = [];
 	
-	// find all guilds that aren't in current guild list, but are in last guild list
-	// const aaa = [guilds.pop(), guilds.pop()]; // testing
-	const setGuilds = new Set(guilds.map(x => x.id));
-	// guilds.push(aaa.pop()); guilds.push(aaa.pop());
-	lastGuilds.forEach(guild => !setGuilds.has(guild.id) && removed.push(guild));
+	currCheck = Date.now();
+	const lastCheck = BdApi.Data.load("RemovalLogTime", "lastCheck") || currCheck;
+	BdApi.Data.save("RemovalLogTime", "lastCheck", currCheck);
 	
-	// update last seen guild list. has to be done every time
-	// to account for guild additions, name changes etc.
-	BdApi.Data.save("RemovalLog", "lastGuilds", guilds.map(saveGuild));
-	BdApi.Data.save("RemovalLog", "lastCheckTime", now);
+	let changed = false;
+	
+	lastGuilds.forEach(last => {
+		const curr = currGuilds[last.id];
+		if (curr) {
+			if (curr.icon !== last.icon) return changed = true;
+			if (curr.name !== last.name) return changed = true;
+			if (curr.ownerId !== last.ownerId) return changed = true;
+		} else {
+			changed = true;
+			removed.push(last);
+		}
+	});
+	
+	if (changed) {
+		BdApi.UI.showToast("RemovalLog: a guild changed");
+		BdApi.Data.save("RemovalLogCache", "lastGuilds", currGuilds.map(saveGuild));
+	} else {
+		// BdApi.UI.showToast("RemovalLog: no changes");
+		return;
+	}
 	
 	// display removed guilds
 	if (removed.length) {
 		// save time range in which the removal happened
-		removed.forEach(x => {x.minDate = then; x.maxDate = now});
+		removed.forEach(x => {x.minDate = lastCheck; x.maxDate = currCheck});
 		
 		// add removed guilds to log
-		const logRemoved = BdApi.Data.load("RemovalLog", "logRemoved") || [];
-		BdApi.Data.save("RemovalLog", "logRemoved", logRemoved.concat(removed));
+		const logRemoved = BdApi.Data.load("RemovalLogOut", "logRemoved") || [];
+		BdApi.Data.save("RemovalLogOut", "logRemoved", logRemoved.concat(removed));
 		
 		// render removed guilds and friends into React elements
 		/*
@@ -149,7 +161,7 @@ function check() {
 			"Removed from guilds",
 			BdApi.React.createElement("div", {class: classDefaultColor}, stuff.concat([
 				BdApi.React.createElement("hr"),
-				BdApi.React.createElement("p", null, `Last checked ${reltime(now - then)}`),
+				BdApi.React.createElement("p", null, `Last checked ${reltime(currCheck - lastCheck)}`),
 			]))
 		))
 		.catch(e => {
@@ -176,7 +188,7 @@ module.exports = class RemovalLog {
 	
 	onSwitch() {
 		// check more often when there's obvious user activity
-		if (Date.now() - now >= minInterval) {
+		if (Date.now() - currCheck >= minInterval) {
 			clearInterval(this.interval);
 			this.interval = setInterval(check, maxInterval);
 			check();
