@@ -28,7 +28,7 @@ Fullscreens the chat scroller and hides some stuff that's meant to pop up on hov
 * Message hover buttons
 * Scrollbar
 
-Note that there's a Discord bug where if you try to type while the chatbar can't be focused, e.g. if this plugin is active or you don't have sending permissions, Discord will foolhardily clear the selection and attempt to focus the chatbar every frame. Go to a channel where you're allowed to type and click the chatbar to mitigate this.
+Note that there's a Discord bug where if you try to type while the chatbar can't be focused, e.g. if this plugin is active or you don't have sending permissions, Discord will foolhardily clear the selection and attempt to focus the chatbar every frame. Go to a channel where you're allowed to type and click the chatbar to stop this.
 
 ## MarkAbsentMembers
 
@@ -41,14 +41,11 @@ as it's not yet clear whether they are a member.
 
 ## OpenUserModal
 
-Currently broken and deactivated, supposed to open the user modal dialog of the user ID in the clipboard.  
-Relied on getUser(id):Promise<User>, which became inaccessible to me after that one Discord update.  
-When I need it in other plugins, I hijack BDFDB to expose BDFDB_INTERNAL and use that to get getUser.  
-Oh right, openUserProfileModal is gone, too. Can't do anything without it.
+Open the user modal dialog of the user ID in the clipboard.
 
 ## RemovalLog
 
-Periodically compares the guild list against a known state.  
+Periodically compares the guild list against a previous state.  
 Notifies of removed guilds with a modal and commits them to a log of removed guilds.  
 Does not listen to event dispatch because I cba to figure out how to do that without a library.
 
@@ -62,4 +59,5 @@ Remembers the following about a removed guild:
 * Icon ID
 
 It does not save icon images, so the icon IDs can go invalid in the meantime.  
-A 404ing icon could indicate a deleted or nuked server if it's unlikely to have simply changed it in the mean time.
+If the icon 404s, then the server was probably deleted or changed its icon right as you got removed.
+Also triggers when you manually leave a server.
