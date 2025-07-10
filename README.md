@@ -43,6 +43,9 @@ as it's not yet clear whether they are a member.
 
 Open the user modal dialog of the user ID in the clipboard.
 
+Copy the message JSON data from the clipboard if there's a message link.  
+(I had to put this *somewhere*)
+
 ## RemovalLog
 
 Periodically compares the guild list against a previous state.  
