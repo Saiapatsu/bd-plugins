@@ -82,10 +82,12 @@ const decoders = [
 		if (params.get("origin") !== "discord") return;
 		return [params.get("messageid"), params.get("channelid"), params.get("serverid")];
 	},
-	// *server, arbitrary channel
+	// *server, arbitrary channel, fall through if not a known guild
 	str => [null, null, getGuild(str.match(/^\*(\d+)/)[1]).id],
 	// #channel
 	str => [null, getChannel(str.match(/^#(\d+)/)[1]).id],
+	// Message ID on its own
+	str => [str.match(/^(\d+)/)[1]],
 	// attachment link
 	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
 	// YYYYMMDDHHMMSS
@@ -103,8 +105,8 @@ const decoders = [
 			&& (str >= 1420070400    && str < Date.now() / 1000) ? msecToSnowflake(str * 1000)
 			:  (str >= 1420070400000 && str < Date.now()        && msecToSnowflake(str       ))]
 	},
-	// discord message url or just message id, tolerating a comment after a space
-	str => str.match(/(@me|\d*?)\/?(\d*?)\/?(\d*)$/).slice(1).reverse().filter(Boolean),
+	// Discord message url
+	str => str.match(/(@me|\d+)\/(\d+)\/(\d+)/).slice(1).reverse().filter(Boolean),
 ];
 
 // returns falsy or array
