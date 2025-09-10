@@ -19,6 +19,7 @@ const [
 	{jumpToPresentBar}, // jump to old/new messages bars
 	{scroller}, // messages scroller, used to hide scrollbar
 	{content, subtitleContainer}, // channel chat content, channel title bar
+	{chatGradientBase}, // gradient at the bottom of the chat, normal and typing
 ] = BdApi.Webpack.getBulk(...[
 	["form", "content", "chat"],
 	["bar", "systemBar"],
@@ -27,6 +28,7 @@ const [
 	["jumpToPresentBar"],
 	["scroller", "empty", "messagesWrapper"],
 	["subtitleContainer", "content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
+	["chatGradientBase"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 
 // bgdarBase is from newMessagesBar
@@ -39,6 +41,7 @@ const css =`
 .${guilds},
 .${buttonContainer},
 .${timestampVisibleOnHover},
+.${chatGradientBase},
 .${jumpToPresentBar.slice(-14)} {
 	display: none !important;
 	
