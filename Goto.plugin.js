@@ -76,52 +76,44 @@ function regexToSnowflake(arr) {
 // A decoder errors or returns false or string[message?, channel?, server?]
 const decoders = [
 	// titled link
-	str => {
+	"titler", str => {
 		const url = new URL(str);
 		const params = new URLSearchParams(url.hash.slice(1));
 		if (params.get("origin") !== "discord") return;
 		return [params.get("messageid"), params.get("channelid"), params.get("serverid")];
 	},
-	// *server, arbitrary channel, fall through if not a known guild
-	str => [null, null, getGuild(str.match(/^\*(\d+)/)[1]).id],
-	// #channel
-	str => [null, getChannel(str.match(/^#(\d+)/)[1]).id],
-	// Message ID on its own
-	str => [str.match(/^(\d+)/)[1]],
-	// attachment link
-	str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
-	// YYYYMMDDHHMMSS
-	str => [regexToSnowflake(/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)$/.exec(str))],
-	// YYYY-MM-DD HH:MM:SS
-	// str => regexToSnowflake(/^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)$/.exec(str)),
-	str => [regexToSnowflake(/^(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)$/.exec(str))],
-	// Pair of channel and message separated by space, needed this once
-	str => str.match(/^(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
-	// Unix seconds or milliseconds timestamp between Discord epoch and now
-	// collision with snowflakes won't be a concern within my lifetime
-	str => {
-		str = Number(/\d+/.exec(str)[0]);
+	"timestamp", str => {
+		str = Number(/^\d+/.exec(str)[0]);
+		// Time must be between Discord epoch and now, also auto-detect sec/msec
 		return [str
 			&& (str >= 1420070400    && str < Date.now() / 1000) ? msecToSnowflake(str * 1000)
 			:  (str >= 1420070400000 && str < Date.now()        && msecToSnowflake(str       ))]
 	},
-	// Discord message url
-	str => str.match(/(@me|\d+)\/(\d+)\/(\d+)/).slice(1).reverse().filter(Boolean),
+	"*server", str => [null, null, getGuild(str.match(/^\*(\d+)/)[1]).id], // arbitrary channel
+	"#channel", str => [null, getChannel(str.match(/^#(\d+)/)[1]).id],
+	"attachment", str => str.match(/\/attachments\/(\d+)\/(\d+)\//).slice(1).reverse(),
+	"YYYYMMDDHHMMSS", str => [regexToSnowflake(/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\b/.exec(str))],
+	"YYYY-MM-DD HH:MM:SS", str => [regexToSnowflake(/^(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)\b/.exec(str))],
+	"channel message", str => str.match(/^(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
+	"message url", str => str.match(/(@me|\d+)\/(\d+)\/(\d+)/).slice(1).reverse().filter(Boolean),
+	"snowflake", str => [str.match(/^(\d+)/)[1]],
 ];
 
 // returns falsy or array
 function verify(value) {
-	return value && (value[0] === null || value[0]) && value;
+	return value && (value[1] === null || value[1]) && value;
 }
 
 // returns array [message, channel, server]
 function decode(str) {
 	let value;
-	for (var f of decoders)
+	for (var i = 0; i < decoders.length; i+=2) {
+		const f = decoders[i+1];
 		try {
 			if (value = verify(f(str)))
-				return value;
+				return [decoders[i], ...value];
 		} catch (e) {}
+	}
 	return [];
 }
 
@@ -135,9 +127,9 @@ function listener(e) {
 		
 		const [, thisserver, thischannel] = document.location.pathname.match(/\/channels\/([^\/]+)\/([^\/]+)/) || [];
 		
-		let [message, channel, server] = decode(str);
+		let [decoder, message, channel, server] = decode(str);
 		
-		if (message === undefined)
+		if (decoder === undefined)
 			return BdApi.UI.showToast("Incomprehensible\n" + str, {type: "warning"});
 		
 		if (message)
@@ -157,10 +149,10 @@ function listener(e) {
 				"message " + message,
 				str,
 			];
-			return BdApi.UI.showToast("Unknown channel\n" + rope.join("\n"), {type: "warning"});
+			return BdApi.UI.showToast(decoder + ": Unknown channel\n" + rope.join("\n"), {type: "warning"});
 		}
 		
-		BdApi.UI.showToast(str);
+		BdApi.UI.showToast(decoder + ": " + str);
 		transitionTo("/" + ["channels", server, channel, message].filter(Boolean).join("/"));
 		
 	} else if (e.keyCode == 33 && e.ctrlKey && e.shiftKey && !e.altKey) { // Ctrl+Shift+PageUp
