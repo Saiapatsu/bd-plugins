@@ -101,7 +101,7 @@ const decoders = [
 
 // returns falsy or array
 function verify(value) {
-	return value && (value[1] === null || value[1]) && value;
+	return value && (value[0] === null || value[0]) && value;
 }
 
 // returns array [message, channel, server]
