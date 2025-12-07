@@ -10,7 +10,6 @@
 // todo: fail more gracefully when any of these go missing
 // example to get the module with a class:
 // BdApi.findAllModules(x => x.form == "form__13a2c")
-
 const [
 	{form, chat}, // message input form, chat scroller wrapper
 	{bar}, // title bar/window chrome
@@ -31,6 +30,9 @@ const [
 	["chatGradientBase"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
 
+// Hardcoding because there's an exact duplicate by keys
+const chatHeaderBar = "chatHeaderBar_a5700d"; // in my case, the bar at the top of a locked forum
+
 // bgdarBase is from newMessagesBar
 const css =`
 .bgdarBase,
@@ -42,6 +44,7 @@ const css =`
 .${buttonContainer},
 .${timestampVisibleOnHover},
 .${chatGradientBase},
+.${chatHeaderBar},
 .${jumpToPresentBar.slice(-14)} {
 	display: none !important;
 	
