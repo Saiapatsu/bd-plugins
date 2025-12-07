@@ -22,7 +22,7 @@ const MessageStore = BdApi.Webpack.getStore("MessageStore");
 
 function tryMessage(match) {
 	if (!match) return;
-	const [, cid, mid] = match
+	const [, gid, cid, mid] = match
 	const message = MessageStore.getMessage(cid, mid)
 	if (message) {
 		copyClipboard(message.content + "\n" + JSON.stringify(message));
@@ -54,7 +54,7 @@ function listener(e) {
 		const clip = readClipboard();
 		if (tryUser(clip.match(/^\s*(\d+)\s*$/)))
 			return;
-		if (tryMessage(clip.match(/^\s*https:\/\/discord.com\/channels\/\d+\/(\d+)\/(\d+)\s*$/)))
+		if (tryMessage(clip.match(/^\s*https:\/\/discord.com\/channels\/(\d+|@me)\/(\d+)\/(\d+)\s*$/)))
 			return;
 		return BdApi.UI.showToast("Clipboard is not a user ID or message URL", {type: "warning"});
 	}
