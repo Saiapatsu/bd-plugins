@@ -28,7 +28,7 @@ const [
 	["scroller", "empty", "messagesWrapper"],
 	["subtitleContainer", "content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
 	["chatGradientBase"],
-].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})))
+].map(x => ({filter: BdApi.Webpack.Filters.byKeys(...x)})))
 
 // Hardcoding because there's an exact duplicate by keys
 const chatHeaderBar = "chatHeaderBar_a5700d"; // in my case, the bar at the top of a locked forum

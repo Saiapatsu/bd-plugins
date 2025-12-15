@@ -23,7 +23,7 @@ const [
 ] = BdApi.Webpack.getBulk(...[
 	["getGuilds", "getGuild", "getGuildCount"],
 	["defaultColor"],
-].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
+].map(x => ({filter: BdApi.Webpack.Filters.byKeys(...x)})));
 
 // const modUserFetch = BdApi.findModuleByProps("getUser", "fetchProfile");
 // const classDefaultColor = BdApi.findModuleByProps("defaultColor").defaultColor;

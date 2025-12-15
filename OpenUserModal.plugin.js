@@ -15,7 +15,7 @@ const [
 	["getGuildId", "getLastSelectedGuildId"],
 	["openUserProfileModal", "closeUserProfileModal"], // IT'S BACK
 	["In", "Lr", "PR", "k", "mB"], // ["getUser", "fetchProfile", "fetchCurrentUser", "acceptAgreements"],
-].map(x => ({filter: BdApi.Webpack.Filters.byProps(...x)})));
+].map(x => ({filter: BdApi.Webpack.Filters.byKeys(...x)})));
 
 const copyClipboard = DiscordNative.clipboard.copy;
 const MessageStore = BdApi.Webpack.getStore("MessageStore");
