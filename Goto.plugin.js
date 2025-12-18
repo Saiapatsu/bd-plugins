@@ -13,7 +13,7 @@ const [
 	{getGuild},
 	{getReadStatesByChannel},
 ] = BdApi.Webpack.getBulk(...[
-	BdApi.Webpack.Filters.byProps("At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv"), // ["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
+	BdApi.Webpack.Filters.byKeys("At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv"), // ["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
 	BdApi.Webpack.Filters.byStoreName("ChannelStore"), // ["getChannel", "hasChannel"],
 	BdApi.Webpack.Filters.byStoreName("GuildStore"),
 	BdApi.Webpack.Filters.byStoreName("ReadStateStore"), // ["getReadStatesByChannel", "getMentionCount"],
