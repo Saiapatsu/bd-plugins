@@ -6,16 +6,15 @@
  * @authorId 164843244230934529
  * @source https://github.com/Saiapatsu/bd-plugins/blob/master/HideGui.plugin.js
  */
-
 // todo: fail more gracefully when any of these go missing
 // example to get the module with a class:
-// BdApi.findAllModules(x => x.form == "form__13a2c")
+// BdApi.Webpack.getModule(x => x.newMessagesBar)
 const [
 	{form, chat}, // message input form, chat scroller wrapper
 	{bar}, // title bar/window chrome
 	{sidebar, guilds}, // channels sidebar, guilds sidebar
 	{buttonContainer, timestampVisibleOnHover}, // hover action buttons
-	{jumpToPresentBar}, // jump to old/new messages bars
+	{barBase}, // jump to old/new messages bars
 	{scroller}, // messages scroller, used to hide scrollbar
 	{content, subtitleContainer}, // channel chat content, channel title bar
 	{chatGradientBase}, // gradient at the bottom of the chat, normal and typing
@@ -24,7 +23,7 @@ const [
 	["bar", "systemBar"],
 	["sidebar", "guilds", "panels", "content"],
 	["buttonContainer", "timestampVisibleOnHover", "zalgo"],
-	["jumpToPresentBar"],
+	["barBase", "jumpToPresentBar"],
 	["scroller", "empty", "messagesWrapper"],
 	["subtitleContainer", "content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
 	["chatGradientBase"],
@@ -52,7 +51,7 @@ const css =`
 .${esc(timestampVisibleOnHover)},
 .${esc(chatGradientBase)},
 .${esc(chatHeaderBar)},
-.${esc(jumpToPresentBar.slice(-14))},
+.${esc(barBase)},
 #locationbar {
 	display: none !important;
 	
