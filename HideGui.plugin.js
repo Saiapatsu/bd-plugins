@@ -33,28 +33,35 @@ const [
 // Hardcoding because there's an exact duplicate by keys
 const chatHeaderBar = "chatHeaderBar_a5700d"; // in my case, the bar at the top of a locked forum
 
+// Some classes begin with a number and using them will result in a malformed selector
+function esc(str) {
+	return /^\d/.test(str)
+		? `\\${str.charCodeAt(0)} ${str.slice(1)}`
+		: str;
+}
+
 // bgdarBase is from newMessagesBar
 const css =`
 .bgdarBase,
-.${form},
-.${bar},
-.${subtitleContainer},
-.${sidebar},
-.${guilds},
-.${buttonContainer},
-.${timestampVisibleOnHover},
-.${chatGradientBase},
-.${chatHeaderBar},
-.${jumpToPresentBar.slice(-14)} {
+.${esc(form)},
+.${esc(bar)},
+.${esc(subtitleContainer)},
+.${esc(sidebar)},
+.${esc(guilds)},
+.${esc(buttonContainer)},
+.${esc(timestampVisibleOnHover)},
+.${esc(chatGradientBase)},
+.${esc(chatHeaderBar)},
+.${esc(jumpToPresentBar.slice(-14))} {
 	display: none !important;
 	
-}.${content}::before {
+}.${esc(content)}::before {
 	content: unset;
 	
-}.${chat} {
+}.${esc(chat)} {
 	border-top: unset !important;
 	
-} .${scroller} {
+} .${esc(scroller)} {
 	right: -20px !important;
 	
 }`;
