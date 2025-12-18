@@ -52,7 +52,8 @@ const css =`
 .${esc(timestampVisibleOnHover)},
 .${esc(chatGradientBase)},
 .${esc(chatHeaderBar)},
-.${esc(jumpToPresentBar.slice(-14))} {
+.${esc(jumpToPresentBar.slice(-14))},
+#locationbar {
 	display: none !important;
 	
 }.${esc(content)}::before {
