@@ -7,8 +7,9 @@
  */
 
 const readClipboard = DiscordNative.clipboard.read;
+const copyClipboard = DiscordNative.clipboard.copy;
 const [
-	{uL: transitionTo}, // Navigator
+	Navigator,
 	{getChannel, hasChannel, getChannelIds},
 	{getGuild},
 	{getReadStatesByChannel},
@@ -18,6 +19,11 @@ const [
 	BdApi.Webpack.Filters.byStoreName("GuildStore"),
 	BdApi.Webpack.Filters.byStoreName("ReadStateStore"), // ["getReadStatesByChannel", "getMentionCount"],
 ].map(x => ({filter: x})));
+
+const transitionTo = Navigator?.uL || function(str) {
+	copyClipboard("https://discord.com" + str);
+	BdApi.UI.showToast("Reformatted clipboard");
+};
 
 /*
 copy(Object.entries(BdApi.Webpack.getByKeys("At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv")).map(([k, v]) => k + ": " + v.toString()).join("\n\n"))
