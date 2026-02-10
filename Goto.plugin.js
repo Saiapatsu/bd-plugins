@@ -88,6 +88,7 @@ const decoders = [
 		if (params.get("origin") !== "discord") return;
 		return [params.get("messageid"), params.get("channelid"), params.get("serverid")];
 	},
+	"legacy titler", str => str.match(/_(@me|\d+)#(\d+)'(\d+)/).slice(1).reverse().filter(Boolean),
 	"timestamp", str => {
 		str = Number(/^\d+/.exec(str)[0]);
 		// Time must be between Discord epoch and now, also auto-detect sec/msec
@@ -102,7 +103,7 @@ const decoders = [
 	"YYYY-MM-DD HH:MM:SS", str => [regexToSnowflake(/^(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)\b/.exec(str))],
 	"channel message", str => str.match(/^(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
 	"message url", str => str.match(/(@me|\d+)\/(\d+)\/(\d+)/).slice(1).reverse().filter(Boolean),
-	"snowflake", str => [str.match(/^(\d+)/)[1]],
+	"snowflake", str => str.match(/^(\d+)/).slice(1),
 ];
 
 // returns falsy or array
