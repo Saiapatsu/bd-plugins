@@ -9,23 +9,26 @@
 const readClipboard = DiscordNative.clipboard.read;
 const copyClipboard = DiscordNative.clipboard.copy;
 const [
-	Navigator,
 	{getChannel, hasChannel, getChannelIds},
 	{getGuild},
 	{getReadStatesByChannel},
 ] = BdApi.Webpack.getBulk(...[
-	BdApi.Webpack.Filters.byKeys("At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv"), // ["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
 	BdApi.Webpack.Filters.byStoreName("ChannelStore"), // ["getChannel", "hasChannel"],
 	BdApi.Webpack.Filters.byStoreName("GuildStore"),
 	BdApi.Webpack.Filters.byStoreName("ReadStateStore"), // ["getReadStatesByChannel", "getMentionCount"],
 ].map(x => ({filter: x})));
 
+const transitionTo = BdApi.Webpack.getByStrings(["transitionTo -"], {searchExports:true});
+// function E(e,t){if(g(e,"assign"))return;d.log(`transitionTo - Transitioning to ${e}`);let n=t?.source,s=t?.sourceLocationStack;if(null==t)r.push(e);else{let n=new URL(e,`https:${window.GLOBAL_ENV.WEBAPP_ENDPOINT}`);r.push({pathname:n.pathname,search:n.search,hash:n.hash,...t})}i=n,a=s}
+
+/*
+Navigator,
+BdApi.Webpack.Filters.byKeys("At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv"), // ["transitionTo", "transitionToGuild", "back", "forward", "getHistory"],
 const transitionTo = Navigator?.uL || function(str) {
 	copyClipboard("https://discord.com" + str);
 	BdApi.UI.showToast("Reformatted clipboard");
 };
 
-/*
 copy(Object.entries(BdApi.Webpack.getByKeys("At", "DB", "DR", "Wf", "XU", "dL", "eH", "m1", "op", "s1", "uL", "uv")).map(([k, v]) => k + ": " + v.toString()).join("\n\n"))
 
 At: function S(){return i}

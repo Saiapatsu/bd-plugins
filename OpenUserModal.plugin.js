@@ -10,12 +10,13 @@ const readClipboard = DiscordNative.clipboard.read;
 const [
 	{getGuildId},
 	{openUserProfileModal},
-	{PR: fetchUser}, // {getUser: fetchUser},
 ] = BdApi.Webpack.getBulk(...[
 	["getGuildId", "getLastSelectedGuildId"],
 	["openUserProfileModal", "closeUserProfileModal"], // IT'S BACK
-	["In", "Lr", "PR", "k", "mB"], // ["getUser", "fetchProfile", "fetchCurrentUser", "acceptAgreements"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byKeys(...x)})));
+
+const fetchUser = BdApi.Webpack.getByStrings("oldFormErrors", '"USER_UPDATE"', {searchExports: true});
+// function A(e){let t=d.default.getUser(e);return null!=t?Promise.resolve(t):s.Bo.get({url:f.Rsh.USER(e),oldFormErrors:!0,rejectWithError:!1}).then(t=>(o.h.dispatch({type:"USER_UPDATE",user:t.body}),d.default.getUser(e)))}
 
 const copyClipboard = DiscordNative.clipboard.copy;
 const MessageStore = BdApi.Webpack.getStore("MessageStore");
