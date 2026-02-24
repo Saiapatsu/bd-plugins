@@ -106,6 +106,7 @@ const decoders = [
 	"YYYY-MM-DD HH:MM:SS", str => [regexToSnowflake(/^(\d\d\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_ ]?(\d\d)[-_: ]?(\d\d)[-_: ]?(\d\d)\b/.exec(str))],
 	"channel message", str => str.match(/^(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
 	"message url", str => str.match(/(@me|\d+)\/(\d+)\/(\d+)/).slice(1).reverse().filter(Boolean),
+	"channel url", str => [null, ...str.match(/(@me|\d+)\/(\d+)/).slice(1).reverse().filter(Boolean)],
 	"snowflake", str => str.match(/^(\d+)/).slice(1),
 ];
 
