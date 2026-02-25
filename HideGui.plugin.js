@@ -12,7 +12,7 @@
 const [
 	{form, chat}, // message input form, chat scroller wrapper
 	{bar}, // title bar/window chrome
-	{sidebar, guilds}, // channels sidebar, guilds sidebar
+	{sidebar, guilds, base}, // channels sidebar, guilds sidebar, whatever's responsible for the titlebar area
 	{buttonContainer, timestampVisibleOnHover}, // hover action buttons
 	{barBase}, // jump to old/new messages bars
 	{scroller}, // messages scroller, used to hide scrollbar
@@ -63,6 +63,9 @@ const css =`
 	
 } .${esc(scroller)} {
 	right: -20px !important;
+	
+} .${esc(base)} {
+	grid-template-rows: [top] min-content [titleBarEnd] min-content [noticeEnd] 1fr [end] !important;
 	
 }`;
 
