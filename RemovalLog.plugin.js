@@ -176,6 +176,9 @@ function check() {
 
 const minInterval = 1 * 60000;
 const maxInterval = 30 * 60000;
+
+requestIdleCallback(x => BdApi.Plugins.enable("RemovalLog"));
+
 module.exports = class RemovalLog {
 	start() {
 		this.interval = setInterval(check, maxInterval);

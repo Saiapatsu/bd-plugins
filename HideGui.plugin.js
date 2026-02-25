@@ -112,6 +112,8 @@ function listener(e) {
 	}
 }
 
+requestIdleCallback(x => BdApi.Plugins.enable("HideGui"));
+
 module.exports = class HideGui {
 	start =()=> { document.body   .addEventListener("keydown", listener, true); }
 	stop  =()=> { document.body.removeEventListener("keydown", listener, true); active && deactivate(); }

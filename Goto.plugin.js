@@ -196,6 +196,8 @@ function listener(e) {
 	}
 }
 
+requestIdleCallback(x => BdApi.Plugins.enable("Goto"));
+
 module.exports = class Goto {
 	start =()=> document.body.   addEventListener("keydown", listener, true);
 	stop  =()=> document.body.removeEventListener("keydown", listener, true);

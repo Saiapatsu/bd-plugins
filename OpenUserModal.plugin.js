@@ -61,6 +61,8 @@ function listener(e) {
 	}
 }
 
+requestIdleCallback(x => BdApi.Plugins.enable("OpenUserModal"));
+
 module.exports = class OpenUserModal {
 	start =()=> document.body.   addEventListener("keydown", listener, true);
 	stop  =()=> document.body.removeEventListener("keydown", listener, true);
