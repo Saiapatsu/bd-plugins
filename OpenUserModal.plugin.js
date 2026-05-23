@@ -10,10 +10,12 @@ const readClipboard = DiscordNative.clipboard.read;
 const [
 	{getGuildId},
 	{openUserProfileModal},
+	{getInvite},
 ] = BdApi.Webpack.getBulk(...[
-	["getGuildId", "getLastSelectedGuildId"],
-	["openUserProfileModal", "closeUserProfileModal"], // IT'S BACK
-].map(x => ({filter: BdApi.Webpack.Filters.byKeys(...x)})));
+	BdApi.Webpack.Filters.byStoreName("GuildStore"),
+	BdApi.Webpack.Filters.byStoreName("UserProfileStore"),
+	BdApi.Webpack.Filters.byStoreName("InviteStore"),
+].map(x => ({filter: x})));
 
 const fetchUser = BdApi.Webpack.getByStrings("oldFormErrors", '"USER_UPDATE"', {searchExports: true});
 // function A(e){let t=d.default.getUser(e);return null!=t?Promise.resolve(t):s.Bo.get({url:f.Rsh.USER(e),oldFormErrors:!0,rejectWithError:!1}).then(t=>(o.h.dispatch({type:"USER_UPDATE",user:t.body}),d.default.getUser(e)))}
@@ -48,6 +50,16 @@ function tryUser(match) {
 	return true;
 }
 
+function tryInvite(match) {
+	if (!match) return;
+	const code = match[1].trim();
+	const invite = getInvite(code);
+	if (!invite) return;
+	BdApi.UI.showToast(code + " Copied");
+	copyClipboard(JSON.stringify(invite))
+	return true;
+}
+
 function listener(e) {
 	if (e.keyCode == 80 && e.ctrlKey && !e.shiftKey && !e.altKey) { // Ctrl+P
 		e.preventDefault();
@@ -57,7 +69,11 @@ function listener(e) {
 			return;
 		if (tryMessage(clip.match(/^\s*https:\/\/discord.com\/channels\/(\d+|@me)\/(\d+)\/(\d+)\s*$/)))
 			return;
-		return BdApi.UI.showToast("Clipboard is not a user ID or message URL", {type: "warning"});
+		if (tryInvite(clip.match(/\/([^\/]+)$/)))
+			return;
+		if (tryInvite(clip.match(/^([^\/]+)$/)))
+			return;
+		return BdApi.UI.showToast("Clipboard is not a user ID, message URL or invite", {type: "warning"});
 	}
 }
 
