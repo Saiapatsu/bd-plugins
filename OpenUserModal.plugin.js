@@ -12,8 +12,9 @@ const [
 	{openUserProfileModal},
 	{getInvite},
 ] = BdApi.Webpack.getBulk(...[
-	BdApi.Webpack.Filters.byStoreName("GuildStore"),
-	BdApi.Webpack.Filters.byStoreName("UserProfileStore"),
+	BdApi.Webpack.Filters.byStoreName("SelectedGuildStore"),
+	// BdApi.Webpack.Filters.byStoreName("UserProfileStore"),
+	BdApi.Webpack.Filters.byKeys("openUserProfileModal"),
 	BdApi.Webpack.Filters.byStoreName("InviteStore"),
 ].map(x => ({filter: x})));
 
@@ -45,8 +46,8 @@ function tryUser(match) {
 		.then(user => openUserProfileModal({
 			userId: str,
 			guildId: guildId,
-		}))
-		.catch(res => BdApi.UI.showToast(res.text + "\n(This user might not exist)", {type: "warning"}));
+		}).catch(res => BdApi.UI.showToast("openUserProfileModal error: " + res.text, {type: "warning"}))
+		, res => BdApi.UI.showToast(res.text + "\n(This user might not exist)", {type: "warning"}))
 	return true;
 }
 
