@@ -108,6 +108,7 @@ const decoders = [
 	"message url", str => str.match(/(@me|\d+)\/(\d+)\/(\d+)/).slice(1).reverse().filter(Boolean),
 	"channel url", str => [null, ...str.match(/(@me|\d+)\/(\d+)/).slice(1).reverse().filter(Boolean)],
 	"snowflake", str => str.match(/^(\d+)/).slice(1),
+	"channel message in copied path", str => str.match(/\\(\d+) (\d+)/).slice(1).reverse().filter(Boolean),
 ];
 
 // returns falsy or array
