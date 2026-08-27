@@ -18,6 +18,7 @@ const [
 	{scroller}, // messages scroller, used to hide scrollbar
 	{content, subtitleContainer}, // channel chat content, channel title bar
 	{chatGradientBase}, // gradient at the bottom of the chat, normal and typing
+	{header: headerThread}, // header over thread chat, the one with the reaction, follow etc. buttons
 ] = BdApi.Webpack.getBulk(...[
 	["form", "content", "chat"],
 	["bar", "systemBar"],
@@ -27,6 +28,7 @@ const [
 	["scroller", "empty", "messagesWrapper"],
 	["subtitleContainer", "content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
 	["chatGradientBase"],
+	["header", "reactions"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byKeys(...x)})))
 
 // Hardcoding because there's an exact duplicate by keys
@@ -50,6 +52,7 @@ const css =`
 .${esc(buttonContainer)},
 .${esc(timestampVisibleOnHover)},
 .${esc(chatGradientBase)},
+.${esc(headerThread)},
 .${esc(chatHeaderBar)},
 .${esc(barBase)},
 #locationbar {
