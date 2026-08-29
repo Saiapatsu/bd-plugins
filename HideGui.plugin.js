@@ -8,7 +8,7 @@
  */
 // todo: fail more gracefully when any of these go missing
 // example to get the module with a class:
-// BdApi.Webpack.getModule(x => x.newMessagesBar)
+// BdApi.Webpack.getModule(x => x.base == "base__5e434")
 const [
 	{form, chat}, // message input form, chat scroller wrapper
 	{bar}, // title bar/window chrome
