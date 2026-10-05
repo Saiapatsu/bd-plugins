@@ -51,13 +51,35 @@ function tryUser(match) {
 	return true;
 }
 
+const units = [
+	["year"  , 31536000000, 63072000000], // 24 months
+	["month" ,  2628000000, 10512000000], // 4 months
+	["week"  ,   604800000,  2678400000], // 31 days
+	["day"   ,    86400000,   129600000], // 36 hours
+	["hour"  ,     3600000,     3600000],
+	["minute",       60000,       60000],
+	["second",        1000,        1000],
+];
+function reltime(elapsed) {
+	for (const [unit, amount, threshold] of units)
+		if (elapsed >= threshold)
+			return `${Math.floor(elapsed / amount)} ${unit}${elapsed >= amount + amount ? "s" : ""}`;
+	return `just now`;
+} // snippet 2C414C3F3F384D64407B396D4B5D7176
+
 function tryInvite(match) {
 	if (!match) return;
 	const code = match[1].trim();
 	const invite = getInvite(code);
 	if (!invite) return;
-	BdApi.UI.showToast(code + " Copied");
-	copyClipboard(JSON.stringify(invite))
+	copyClipboard(JSON.stringify(invite));
+	if (invite.expires_at) {
+		const expires_at = invite.expires_at;
+		const expiry = new Date(expires_at).valueOf() - Date.now();
+		BdApi.UI.showToast(`${code} copied. Expires in ${reltime(expiry)} on ${expires_at}.`);
+	} else {
+		BdApi.UI.showToast(`${code} copied. Does not expire.`);
+	}
 	return true;
 }
 
