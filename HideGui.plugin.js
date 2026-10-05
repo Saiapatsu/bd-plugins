@@ -19,6 +19,7 @@ const [
 	{content, subtitleContainer}, // channel chat content, channel title bar
 	{chatGradientBase}, // gradient at the bottom of the chat, normal and typing
 	{container: headerThread}, // header over thread chat, the one with the reaction, follow etc. buttons
+	{container: headerVc}, // header over vc text
 ] = BdApi.Webpack.getBulk(...[
 	["form", "content", "chat"],
 	["bar", "systemBar"],
@@ -29,6 +30,7 @@ const [
 	["subtitleContainer", "content", "title", "uploadArea", "chatContent", "avatar"], // Parent of main.chatContent
 	["chatGradientBase"],
 	["container", "header", "reactions"],
+	["container", "upperContainer", "hamburger"],
 ].map(x => ({filter: BdApi.Webpack.Filters.byKeys(...x)})))
 
 // Hardcoding because there's an exact duplicate by keys
@@ -53,6 +55,7 @@ const css =`
 .${esc(timestampVisibleOnHover)},
 .${esc(chatGradientBase)},
 .${esc(headerThread)},
+.${esc(headerVc)},
 .${esc(chatHeaderBar)},
 .${esc(barBase)},
 #locationbar {
